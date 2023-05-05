@@ -1,3 +1,4 @@
+import asyncio
 from src import sx127x
 from src import config_lora
 
@@ -6,13 +7,13 @@ from src import config_lora
 from src import LoRaReceiver
 # import LoRaSetSpread
 # import LoRaSetSyncWord
-from src import LoRaReceiverCallback
+# from src import LoRaReceiverCallback
 # import LoRaDuplex
 # from src import LoRaDuplexCallback
 # import LoRaPingPong
 
 
-def main():
+async def main():
 
     # Controller(
     # pin_id_led = ON_BOARD_LED_PIN_NO,
@@ -42,7 +43,7 @@ def main():
 
     # LoRaDumpRegisters.dumpRegisters(lora)
     # LoRaSender.send(lora)
-    LoRaReceiver.receive(lora)
+    await LoRaReceiver.receive(lora)
     # LoRaSetSpread.setSpread(lora)
     # LoRaSetSyncWord.setSyncWord(lora)
     # LoRaReceiverCallback.receiveCallback(lora)
@@ -51,4 +52,4 @@ def main():
     # LoRaPingPong.ping_pong(lora)
 
 
-main()
+asyncio.run(main())
