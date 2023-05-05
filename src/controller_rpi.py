@@ -34,9 +34,9 @@ class Controller(controller.Controller):
     PIN_ID_FOR_LORA_DIO4 = None
     PIN_ID_FOR_LORA_DIO5 = None
 
-    def __init__(self):
+    def __init__(self, pin_id_reset=PIN_ID_FOR_LORA_RESET,):
 
-        super().__init__()
+        super().__init__(pin_id_reset)
 
     def prepare_pin(self, pin_id, in_out=GPIO.OUT):
         if pin_id is not None:
