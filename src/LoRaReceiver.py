@@ -3,7 +3,7 @@ def receive(lora):
 
     while True:
         if lora.receivedPacket():
-            lora.blink_led()
+            # lora.blink_led()
 
             try:
                 payload = lora.read_payload()
