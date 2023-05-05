@@ -33,30 +33,3 @@ class AMQPConnection:
             ),
             routing_key='my_queue'
         )
-
-# Usage example
-
-
-async def main():
-    amqp_connection = AMQPConnection(rabbitmq_server)
-    await amqp_connection.connect()
-
-    try:
-        lora = ...  # Initialize your LoRa object
-        print("LoRa Receiver")
-        while True:
-            # if lora.receivedPacket():
-            try:
-                # payload = lora.read_payload()
-                message = 'hai'
-                print("*** Received message ***\n{}".format(message))
-                # Invoke the method to send the message as AMQP
-                await amqp_connection.send_amqp_message(message)
-            except Exception as e:
-                print(e)
-            # print("with RSSI: {}\n".format(lora.packetRssi()))
-            await asyncio.sleep(0.1)  # Allow other tasks to run
-    finally:
-        await amqp_connection.close()
-
-asyncio.run(main())
