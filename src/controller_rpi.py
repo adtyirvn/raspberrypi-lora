@@ -5,10 +5,10 @@ from . import controller
 
 GPIO.setmode(GPIO.BCM)
 
-try:
-    GPIO.cleanup()
-except Exception as e:
-    print(e)
+# try:
+#     GPIO.cleanup()
+# except Exception as e:
+#     print(e)
 
 
 class Controller(controller.Controller):
