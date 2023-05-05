@@ -24,11 +24,19 @@ class Controller:
     PIN_ID_FOR_LORA_DIO4 = None
     PIN_ID_FOR_LORA_DIO5 = None
 
-    def __init__(self, pin_id_reset=PIN_ID_FOR_LORA_RESET):
+    def __init__(self,
+                 pin_id_led=ON_BOARD_LED_PIN_NO,
+                 on_board_led_high_is_on=ON_BOARD_LED_HIGH_IS_ON,
+                 pin_id_reset=PIN_ID_FOR_LORA_RESET,
+                 blink_on_start=(2, 0.5, 0.5)):
+
+        # self.pin_led = self.prepare_pin(pin_id_led)
+        # self.on_board_led_high_is_on = on_board_led_high_is_on
         self.pin_reset = self.prepare_pin(pin_id_reset)
         self.reset_pin(self.pin_reset)
         self.spi = self.prepare_spi(self.get_spi())
         self.transceivers = {}
+        # self.blink_led(*blink_on_start)
 
     def add_transceiver(self,
                         transceiver,
@@ -41,6 +49,8 @@ class Controller:
                         pin_id_PayloadCrcError=PIN_ID_FOR_LORA_DIO5):
 
         transceiver.transfer = self.spi.transfer
+        transceiver.blink_led = self.blink_led
+
         transceiver.pin_ss = self.prepare_pin(pin_id_ss)
         transceiver.pin_RxDone = self.prepare_irq_pin(pin_id_RxDone)
         transceiver.pin_RxTimeout = self.prepare_irq_pin(pin_id_RxTimeout)
@@ -87,10 +97,10 @@ class Controller:
         '''
         raise NotImplementedError(reason)
 
-    # def led_on(self, on=True):
+    # def led_on(self, on = True):
     #     self.pin_led.high() if self.on_board_led_high_is_on == on else self.pin_led.low()
 
-    # def blink_led(self, times=1, on_seconds=0.1, off_seconds=0.1):
+    # def blink_led(self, times = 1, on_seconds = 0.1, off_seconds = 0.1):
     #     for i in range(times):
     #         self.led_on(True)
     #         sleep(on_seconds)
