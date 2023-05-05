@@ -20,7 +20,7 @@ class Controller(controller.Controller):
                  16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27,)
 
     # LoRa config
-    PIN_ID_FOR_LORA_RESET = 5
+    PIN_ID_FOR_LORA_RESET = 6
 
     PIN_ID_FOR_LORA_SS = 8
     PIN_ID_SCK = 11

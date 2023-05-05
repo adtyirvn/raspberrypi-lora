@@ -9,7 +9,6 @@ def receiveCallback(lora):
 
 
 def on_receive(lora, payload):
-    # lora.blink_led()
 
     try:
         print("*** Received message ***\n{}".format(payload.decode()))
