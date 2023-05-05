@@ -25,10 +25,8 @@ class Controller:
     PIN_ID_FOR_LORA_DIO5 = None
 
     def __init__(self,
-                 pin_id_led=ON_BOARD_LED_PIN_NO,
-                 on_board_led_high_is_on=ON_BOARD_LED_HIGH_IS_ON,
                  pin_id_reset=PIN_ID_FOR_LORA_RESET,
-                 blink_on_start=(2, 0.5, 0.5)):
+                 ):
 
         # self.pin_led = self.prepare_pin(pin_id_led)
         # self.on_board_led_high_is_on = on_board_led_high_is_on
