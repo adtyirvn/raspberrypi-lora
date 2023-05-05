@@ -12,5 +12,4 @@ async def main():
     print('lora', lora)
     await LoRaReceiver.receive(lora)
 
-
 asyncio.run(main())
