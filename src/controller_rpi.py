@@ -14,15 +14,15 @@ GPIO.setmode(GPIO.BCM)
 class Controller(controller.Controller):
 
     # BOARD config
-    ON_BOARD_LED_PIN_NO = 47  # RPi's on-board LED
+    ON_BOARD_LED_PIN_NO = 22  # RPi's on-board LED
     ON_BOARD_LED_HIGH_IS_ON = True
     GPIO_PINS = (2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
                  16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27,)
 
     # LoRa config
-    PIN_ID_FOR_LORA_RESET = 5
+    PIN_ID_FOR_LORA_RESET = 6
 
-    PIN_ID_FOR_LORA_SS = 8
+    PIN_ID_FOR_LORA_SS = 25
     PIN_ID_SCK = 11
     PIN_ID_MOSI = 10
     PIN_ID_MISO = 9
