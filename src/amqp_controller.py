@@ -20,7 +20,7 @@ class AMQPConnection:
     async def connect(self):
         self.connection = await aio_pika.connect_robust(self.host)
         self.channel = await self.connection.channel()
-        await self.channel.declare_queue('my_queue', durable=True)
+        await self.channel.declare_queue('ecg:esp32', durable=True)
 
     async def close(self):
         await self.connection.close()
@@ -31,5 +31,5 @@ class AMQPConnection:
                 body=message.encode(),
                 delivery_mode=aio_pika.DeliveryMode.PERSISTENT
             ),
-            routing_key='my_queue'
+            routing_key='ecg:esp32'
         )
