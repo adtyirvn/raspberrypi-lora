@@ -25,14 +25,10 @@ class Controller:
     PIN_ID_FOR_LORA_DIO5 = None
 
     def __init__(self, pin_id_reset=PIN_ID_FOR_LORA_RESET):
-
-        # self.pin_led = self.prepare_pin(pin_id_led)
-        # self.on_board_led_high_is_on = on_board_led_high_is_on
         self.pin_reset = self.prepare_pin(pin_id_reset)
         self.reset_pin(self.pin_reset)
         self.spi = self.prepare_spi(self.get_spi())
         self.transceivers = {}
-        # self.blink_led(*blink_on_start)
 
     def add_transceiver(self,
                         transceiver,
@@ -45,8 +41,6 @@ class Controller:
                         pin_id_PayloadCrcError=PIN_ID_FOR_LORA_DIO5):
 
         transceiver.transfer = self.spi.transfer
-        # transceiver.blink_led = self.blink_led
-
         transceiver.pin_ss = self.prepare_pin(pin_id_ss)
         transceiver.pin_RxDone = self.prepare_irq_pin(pin_id_RxDone)
         transceiver.pin_RxTimeout = self.prepare_irq_pin(pin_id_RxTimeout)
