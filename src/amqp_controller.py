@@ -22,11 +22,12 @@ async def send_amqp_message(server, message):
     queue = await channel.declare_queue('my_queue', durable=True)
 
     # Publish the message to the queue
-    await queue.publish(
+    await channel.default_exchange.publish(
         aio_pika.Message(
             body=message.encode(),
             delivery_mode=aio_pika.DeliveryMode.PERSISTENT
-        )
+        ),
+        routing_key='my_queue'
     )
 
     # Close the connection
