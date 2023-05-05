@@ -3,7 +3,7 @@ from src import config_lora
 
 # import LoRaDumpRegisters
 # import LoRaSender
-# from src import LoRaReceiver
+from src import LoRaReceiver
 # import LoRaSetSpread
 # import LoRaSetSyncWord
 from src import LoRaReceiverCallback
@@ -42,10 +42,10 @@ def main():
 
     # LoRaDumpRegisters.dumpRegisters(lora)
     # LoRaSender.send(lora)
-    # LoRaReceiver.receive(lora)
+    LoRaReceiver.receive(lora)
     # LoRaSetSpread.setSpread(lora)
     # LoRaSetSyncWord.setSyncWord(lora)
-    LoRaReceiverCallback.receiveCallback(lora)
+    # LoRaReceiverCallback.receiveCallback(lora)
     # LoRaDuplex.duplex(lora)
     # LoRaDuplexCallback.duplexCallback(lora)
     # LoRaPingPong.ping_pong(lora)
