@@ -11,50 +11,52 @@ rabbitmq_server = os.getenv('RABBITMQ_SERVER')
 print(rabbitmq_server)  # Output: my_value
 
 
-async def send_amqp_message(server, message):
-    # Establish connection
-    connection = await aio_pika.connect_robust(server)
+class AMQPConnection:
+    def __init__(self, host):
+        self.host = host
+        self.connection = None
+        self.channel = None
 
-    # Create a channel
-    channel = await connection.channel()
+    async def connect(self):
+        self.connection = await aio_pika.connect_robust(self.host)
+        self.channel = await self.connection.channel()
+        await self.channel.declare_queue('my_queue', durable=True)
 
-    # Declare the queue
-    queue = await channel.declare_queue('my_queue', durable=True)
+    async def close(self):
+        await self.connection.close()
 
-    # Publish the message to the queue
-    await channel.default_exchange.publish(
-        aio_pika.Message(
-            body=message.encode(),
-            delivery_mode=aio_pika.DeliveryMode.PERSISTENT
-        ),
-        routing_key='my_queue'
-    )
+    async def send_amqp_message(self, message):
+        await self.channel.default_exchange.publish(
+            aio_pika.Message(
+                body=message.encode(),
+                delivery_mode=aio_pika.DeliveryMode.PERSISTENT
+            ),
+            routing_key='my_queue'
+        )
 
-    # Close the connection
-    await connection.close()
+# Usage example
 
 
-async def receive():
-    print("LoRa Receiver")
-    while True:
-        # if lora.receivedPacket():
-        try:
-            # payload = lora.read_payload()
-            # message = payload.decode()
-            print("*** Received message ***\n{}".format('hai'))
-            # Invoke the callback function to send the message as AMQP
-            await send_amqp_message(rabbitmq_server, 'hai')
-        except Exception as e:
-            print(e)
-        # print("with RSSI: {}\n".format(lora.packetRssi()))
-        await asyncio.sleep(2)
+async def main():
+    amqp_connection = AMQPConnection(rabbitmq_server)
+    await amqp_connection.connect()
 
-loop = asyncio.get_event_loop()
+    try:
+        lora = ...  # Initialize your LoRa object
+        print("LoRa Receiver")
+        while True:
+            # if lora.receivedPacket():
+            try:
+                # payload = lora.read_payload()
+                message = 'hai'
+                print("*** Received message ***\n{}".format(message))
+                # Invoke the method to send the message as AMQP
+                await amqp_connection.send_amqp_message(message)
+            except Exception as e:
+                print(e)
+            print("with RSSI: {}\n".format(lora.packetRssi()))
+            await asyncio.sleep(0.1)  # Allow other tasks to run
+    finally:
+        await amqp_connection.close()
 
-try:
-    loop.create_task(receive())
-    loop.run_forever()
-except KeyboardInterrupt:
-    pass
-finally:
-    loop.close()
+asyncio.run(main())
