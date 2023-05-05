@@ -3,7 +3,7 @@ from src import config_lora
 
 # import LoRaDumpRegisters
 # import LoRaSender
-from src import LoRaReceiver
+# from src import LoRaReceiver
 # import LoRaSetSpread
 # import LoRaSetSyncWord
 from src import LoRaReceiverCallback
