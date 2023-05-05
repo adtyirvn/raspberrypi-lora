@@ -11,9 +11,9 @@ rabbitmq_server = os.getenv('RABBITMQ_SERVER')
 print(rabbitmq_server)  # Output: my_value
 
 
-async def send_amqp_message(message):
+async def send_amqp_message(server, message):
     # Establish connection
-    connection = await aio_pika.connect_robust('amqp://guest:guest@localhost/')
+    connection = await aio_pika.connect_robust(server)
 
     # Create a channel
     channel = await connection.channel()
@@ -42,7 +42,7 @@ async def receive():
             # message = payload.decode()
             print("*** Received message ***\n{}".format('hai'))
             # Invoke the callback function to send the message as AMQP
-            await send_amqp_message('hai')
+            await send_amqp_message(rabbitmq_server, 'hai')
         except Exception as e:
             print(e)
         # print("with RSSI: {}\n".format(lora.packetRssi()))
