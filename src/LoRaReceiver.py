@@ -21,7 +21,7 @@ async def receive(lora):
             if lora.receivedPacket():
                 try:
                     payload = lora.read_payload()
-                    message = payload.encode('utf-8')
+                    message = payload.decode('utf-8')
                     print("*** Received message ***\n{}".format(message))
                     # Invoke the method to send the message as AMQP
                     await amqp_connection.send_amqp_message(message)
