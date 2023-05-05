@@ -54,7 +54,7 @@ async def main():
                 await amqp_connection.send_amqp_message(message)
             except Exception as e:
                 print(e)
-            print("with RSSI: {}\n".format(lora.packetRssi()))
+            # print("with RSSI: {}\n".format(lora.packetRssi()))
             await asyncio.sleep(0.1)  # Allow other tasks to run
     finally:
         await amqp_connection.close()
