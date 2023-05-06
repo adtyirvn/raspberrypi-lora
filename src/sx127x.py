@@ -180,7 +180,7 @@ class SX127x:
         self.aquire_lock(True)  # wait until RX_Done, lock and begin writing.
 
         self.beginPacket(implicitHeader)
-        self.write(string.encode())
+        self.write(string.encode('utf-8'))
         self.endPacket()
 
         self.aquire_lock(False)  # unlock when done writing

@@ -1,6 +1,5 @@
 import os
 from dotenv import load_dotenv
-import asyncio
 from . import amqp_controller
 
 # Load environment variables from .env file
