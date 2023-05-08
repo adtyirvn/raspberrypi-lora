@@ -10,6 +10,10 @@ load_dotenv()
 rabbitmq_server = os.getenv('RABBITMQ_SERVER')
 
 
+class RabbitMQConnectionError(Exception):
+    pass
+
+
 class AMQPConnection:
     def __init__(self, host):
         self.host = host
@@ -17,7 +21,10 @@ class AMQPConnection:
         self.channel = None
 
     async def connect(self):
-        self.connection = await aio_pika.connect_robust(self.host)
+        try:
+            self.connection = await aio_pika.connect_robust(self.host)
+        except Exception as e:
+            RabbitMQConnectionError(f"Error connecting to RabbitMQ: {e}")
         self.channel = await self.connection.channel()
         await self.channel.declare_queue('ecg:esp32', durable=False)
 
