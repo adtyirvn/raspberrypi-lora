@@ -8,7 +8,6 @@ load_dotenv()
 
 # Access environment variables
 rabbitmq_server = os.getenv('RABBITMQ_SERVER')
-print(rabbitmq_server)  # Output: my_value
 
 
 class AMQPConnection:
