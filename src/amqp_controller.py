@@ -23,10 +23,10 @@ class AMQPConnection:
     async def connect(self):
         try:
             self.connection = await aio_pika.connect_robust(self.host)
+            self.channel = await self.connection.channel()
+            await self.channel.declare_queue('ecg:esp32', durable=False)
         except Exception as e:
             RabbitMQConnectionError(f"Error connecting to RabbitMQ: {e}")
-        self.channel = await self.connection.channel()
-        await self.channel.declare_queue('ecg:esp32', durable=False)
 
     async def close(self):
         await self.connection.close()
@@ -34,7 +34,7 @@ class AMQPConnection:
     async def send_amqp_message(self, message):
         await self.channel.default_exchange.publish(
             aio_pika.Message(
-                body=message.encode(),
+                body=message.encode('utf-8'),
                 delivery_mode=aio_pika.DeliveryMode.NOT_PERSISTENT
             ),
             routing_key='ecg:esp32'
