@@ -14,8 +14,8 @@ GPIO.setmode(GPIO.BCM)
 class Controller(controller.Controller):
 
     # BOARD config
-    # ON_BOARD_LED_PIN_NO = 22  # RPi's on-board LED
-    # ON_BOARD_LED_HIGH_IS_ON = True
+    ON_BOARD_LED_PIN_NO = 16  # RPi's on-board LED
+    ON_BOARD_LED_HIGH_IS_ON = True
     GPIO_PINS = (2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
                  16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27,)
 
@@ -34,12 +34,17 @@ class Controller(controller.Controller):
     PIN_ID_FOR_LORA_DIO4 = None
     PIN_ID_FOR_LORA_DIO5 = None
 
-    def __init__(self,
-                 pin_id_reset=PIN_ID_FOR_LORA_RESET,
+    def __init__(self, pin_id_led=ON_BOARD_LED_PIN_NO,
+                 on_board_led_high_is_on=ON_BOARD_LED_HIGH_IS_ON,
+                 pin_id_reset=PIN_ID_FOR_LORA_RESET, blink_on_start=(
+                     2, 0.5, 0.5)
                  ):
 
         super().__init__(
-            pin_id_reset
+            pin_id_led,
+            on_board_led_high_is_on,
+            pin_id_reset,
+            blink_on_start
         )
 
     def prepare_pin(self, pin_id, in_out=GPIO.OUT):

@@ -17,6 +17,7 @@ async def receive(lora):
         print("LoRa Receiver")
         while True:
             if lora.receivedPacket():
+                lora.blink_led()
                 try:
                     payload = lora.read_payload()
                     message = payload.decode('utf-8')
