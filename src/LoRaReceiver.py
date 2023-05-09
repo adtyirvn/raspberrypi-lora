@@ -20,11 +20,7 @@ async def receive(lora):
         print("LoRa Receiver")
         while True:
             if lora.receivedPacket():
-                GPIO.setup(23, GPIO.OUT, initial=GPIO.LOW)
-                GPIO.output(23, GPIO.HIGH)
-                sleep(1)
-                GPIO.output(23, GPIO.LOW)
-                sleep(1)
+                lora.blink_led()
                 try:
                     payload = lora.read_payload()
                     message = payload.decode('utf-8')
