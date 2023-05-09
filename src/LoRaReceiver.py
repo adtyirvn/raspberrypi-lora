@@ -1,12 +1,15 @@
 import os
 from dotenv import load_dotenv
 from . import amqp_controller
-
+import RPi.GPIO as GPIO
+from time import sleep
 # Load environment variables from .env file
 load_dotenv()
 
 # Access environment variables
 rabbitmq_server = os.getenv('RABBITMQ_SERVER')
+
+GPIO.setmode(GPIO.BCM)
 
 
 async def receive(lora):
@@ -17,7 +20,11 @@ async def receive(lora):
         print("LoRa Receiver")
         while True:
             if lora.receivedPacket():
-                lora.blink_led()
+                GPIO.setup(23, GPIO.OUT, initial=GPIO.LOW)
+                GPIO.output(23, GPIO.HIGH)
+                sleep(1)
+                GPIO.output(23, GPIO.LOW)
+                sleep(1)
                 try:
                     payload = lora.read_payload()
                     message = payload.decode('utf-8')
