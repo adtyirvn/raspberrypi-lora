@@ -50,7 +50,7 @@ class Controller:
                         pin_id_PayloadCrcError=PIN_ID_FOR_LORA_DIO5):
 
         transceiver.transfer = self.spi.transfer
-        # transceiver.blink_led = self.blink_led
+        transceiver.blink_led = self.blink_led
 
         transceiver.pin_ss = self.prepare_pin(pin_id_ss)
         transceiver.pin_RxDone = self.prepare_irq_pin(pin_id_RxDone)
