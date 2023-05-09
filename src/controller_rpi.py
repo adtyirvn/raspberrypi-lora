@@ -117,11 +117,12 @@ class Controller(controller.Controller):
             self.pin_led, GPIO.HIGH if self.on_board_led_high_is_on == on else GPIO.LOW)
 
     def blink_led(self, times=1, on_seconds=0.1, off_seconds=0.1):
+        GPIO.setup(23, GPIO.OUT, initial=GPIO.LOW)
         for i in range(times):
-            self.led_on(True)
-            sleep(on_seconds)
-            self.led_on(False)
-            sleep(off_seconds)
+            GPIO.output(23, GPIO.HIGH)
+            sleep(1)
+            GPIO.output(23, GPIO.LOW)
+            sleep(1)
 
     def __exit__(self):
         GPIO.cleanup()
