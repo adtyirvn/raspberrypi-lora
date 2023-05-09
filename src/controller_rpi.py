@@ -111,6 +111,16 @@ class Controller(controller.Controller):
             new_spi.close = spi.close
             return new_spi
 
+    def led_on(self, on=True):
+        self.pin_led.high() if self.on_board_led_high_is_on == on else self.pin_led.low()
+
+    def blink_led(self, times=1, on_seconds=0.1, off_seconds=0.1):
+        for i in range(times):
+            self.led_on(True)
+            sleep(on_seconds)
+            self.led_on(False)
+            sleep(off_seconds)
+
     def __exit__(self):
         GPIO.cleanup()
         self.spi.close()
