@@ -39,7 +39,7 @@ async def receive(lora):
 
                 except Exception as e:
                     print(e)
-                except KeyboardInterrupt:
+    except KeyboardInterrupt:
                     display.lcd_clear()
                     print("Keyboard interrupt detected.")
     finally:
