@@ -27,9 +27,8 @@ async def receive(lora):
                     message = payload.decode('utf-8')
                     message_json = json.loads(message)
                     print("*** Received message ***\n{}".format(message))
-                    print(message_json["temperature"])
                     display.lcd_display_string("Received message", 1)
-                    temp = f'T: {str(message_json["temperature"])}°C'
+                    temp = f'T: {str(message_json["temperature"])}C'
                     hum = f'H: {str(message_json["humidity"])}%'
                     display.lcd_display_string(temp, 2)
                     display.lcd_display_string(hum, 2, 8)
