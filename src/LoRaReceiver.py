@@ -3,13 +3,13 @@ from dotenv import load_dotenv
 from . import amqp_controller
 import RPi.GPIO as GPIO
 from time import sleep
+import drivers
 # Load environment variables from .env file
 load_dotenv()
 
 # Access environment variables
 rabbitmq_server = os.getenv('RABBITMQ_SERVER')
-
-GPIO.setmode(GPIO.BCM)
+display = drivers.Lcd()
 
 
 async def receive(lora):
@@ -25,8 +25,10 @@ async def receive(lora):
                     payload = lora.read_payload()
                     message = payload.decode('utf-8')
                     print("*** Received message ***\n{}".format(message))
+                    display.lcd_display_string('*** Received message ***', 1)
                     # Invoke the method to send the message as AMQP
                     await amqp_connection.send_amqp_message(message)
+                    display.lcdP_clear()
                 except Exception as e:
                     print(e)
             # print("with RSSI: {}\n".format(lora.packetRssi()))
