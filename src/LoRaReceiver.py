@@ -30,6 +30,8 @@ async def receive(lora):
                     display.lcd_display_string("Received message", 1)
                     temp = f'T: {str(message_json["temperature"])}C'
                     hum = f'H: {str(message_json["humidity"])}%'
+                    display.lcd_display_string(
+                        get_formatted_datetime(message_json["timestamp"]), 1)
                     display.lcd_display_string(temp, 2)
                     display.lcd_display_string(hum, 2, 8)
                     # Invoke the method to send the message as AMQP
@@ -41,3 +43,11 @@ async def receive(lora):
             # await asyncio.sleep(0.1)  # Allow other tasks to run
     finally:
         await amqp_connection.close()
+
+
+def get_formatted_datetime(dt):
+    datetime_tuple = dt
+    formatted_datetime = "{:04d}-{:02d}-{:02d} {:02d}:{:02d}:{:02d}".format(
+        datetime_tuple[0], datetime_tuple[1], datetime_tuple[2],
+        datetime_tuple[4], datetime_tuple[5], datetime_tuple[6])
+    return formatted_datetime
