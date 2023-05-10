@@ -25,8 +25,9 @@ async def receive(lora):
                     payload = lora.read_payload()
                     message = payload.decode('utf-8')
                     print("*** Received message ***\n{}".format(message))
+                    print(message["temperature"])
                     display.lcd_display_string("Received message", 1)
-                    display.lcd_display_string(str(message["temperature"]), 2)
+                    display.lcd_display_string("", 2)
                     # Invoke the method to send the message as AMQP
                     await amqp_connection.send_amqp_message(message)
 
