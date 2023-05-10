@@ -18,7 +18,7 @@ Made available under GNU GENERAL PUBLIC LICENSE
 # i2c bus (0 -- original Pi, 1 -- Rev 2 Pi)
 from time import sleep
 import smbus
-I2CBUS = 0
+I2CBUS = 1
 
 # LCD Address
 ADDRESS = 0x27
