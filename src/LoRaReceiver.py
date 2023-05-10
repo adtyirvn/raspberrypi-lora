@@ -29,8 +29,10 @@ async def receive(lora):
                     print("*** Received message ***\n{}".format(message))
                     print(message_json["temperature"])
                     display.lcd_display_string("Received message", 1)
-                    display.lcd_display_string(
-                        str(message_json["temperature"]), 2)
+                    temp = f'T: {str(message_json["temperature"])}°C'
+                    hum = f'H: {str(message_json["humidity"])}%'
+                    display.lcd_display_string(temp, 2)
+                    display.lcd_display_string(hum, 2, 8)
                     # Invoke the method to send the message as AMQP
                     await amqp_connection.send_amqp_message(message)
 
