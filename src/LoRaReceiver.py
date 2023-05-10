@@ -4,6 +4,7 @@ from . import amqp_controller
 import RPi.GPIO as GPIO
 from time import sleep
 from . import lcd_i2c
+import json
 # Load environment variables from .env file
 load_dotenv()
 
@@ -24,10 +25,11 @@ async def receive(lora):
                 try:
                     payload = lora.read_payload()
                     message = payload.decode('utf-8')
+                    message_json = json.loads(message)
                     print("*** Received message ***\n{}".format(message))
-                    print(message["temperature"])
+                    print(message_json["temperature"])
                     display.lcd_display_string("Received message", 1)
-                    display.lcd_display_string("", 2)
+                    display.lcd_display_string(message_json["temperature"], 2)
                     # Invoke the method to send the message as AMQP
                     await amqp_connection.send_amqp_message(message)
 
