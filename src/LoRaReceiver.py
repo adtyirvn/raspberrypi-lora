@@ -40,8 +40,8 @@ async def receive(lora):
                 except Exception as e:
                     print(e)
     except KeyboardInterrupt:
-                    display.lcd_clear()
-                    print("Keyboard interrupt detected.")
+        display.lcd_clear()
+        print("Keyboard interrupt detected.")
     finally:
         await amqp_connection.close()
 
