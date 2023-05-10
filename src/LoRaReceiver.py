@@ -23,6 +23,7 @@ async def receive(lora):
             if lora.receivedPacket():
                 lora.blink_led()
                 try:
+                    display.lcd_clear()
                     payload = lora.read_payload()
                     message = payload.decode('utf-8')
                     message_json = json.loads(message)
