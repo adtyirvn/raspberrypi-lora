@@ -23,10 +23,11 @@ async def receive(lora):
             if lora.receivedPacket():
                 lora.blink_led()
                 try:
-                    display.lcd_clear()
                     payload = lora.read_payload()
                     message = payload.decode('utf-8')
                     message_json = json.loads(message)
+                    # Invoke the method to send the message as AMQP
+                    await amqp_connection.send_amqp_message(message)
                     print("*** Received message ***\n{}".format(message))
                     display.lcd_display_string("Received message", 1)
                     temp = f'T: {str(message_json["temperature"])}C'
@@ -35,8 +36,7 @@ async def receive(lora):
                         get_formatted_datetime(message_json["timestamp"]), 1)
                     display.lcd_display_string(temp, 2)
                     display.lcd_display_string(hum, 2, 8)
-                    # Invoke the method to send the message as AMQP
-                    await amqp_connection.send_amqp_message(message)
+                    print("with RSSI: {}\n".format(lora.packetRssi()))
 
                 except Exception as e:
                     print(e)
@@ -48,7 +48,7 @@ async def receive(lora):
 
 def get_formatted_datetime(dt):
     datetime_tuple = dt
-    formatted_datetime = "{:04d}-{:02d}-{:02d} {:02d}:{:02d}:{:02d}".format(
+    formatted_datetime = "{:04d}-{:02d}-{:02d} {:02d}:{:02d}".format(
         datetime_tuple[0], datetime_tuple[1], datetime_tuple[2],
-        datetime_tuple[4], datetime_tuple[5], datetime_tuple[6])
+        datetime_tuple[4], datetime_tuple[5])
     return formatted_datetime
