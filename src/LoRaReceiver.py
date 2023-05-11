@@ -26,8 +26,6 @@ async def receive(lora):
                     payload = lora.read_payload()
                     message = payload.decode('utf-8')
                     message_json = json.loads(message)
-                    # Invoke the method to send the message as AMQP
-                    await amqp_connection.send_amqp_message(message)
                     print("*** Received message ***\n{}".format(message))
                     temp = f'T: {str(message_json["temperature"])}C'
                     hum = f'H: {str(message_json["humidity"])}%'
@@ -36,6 +34,8 @@ async def receive(lora):
                     display.lcd_display_string(temp, 2)
                     display.lcd_display_string(hum, 2, 8)
                     print("with RSSI: {}\n".format(lora.packetRssi()))
+                    # Invoke the method to send the message as AMQP
+                    await amqp_connection.send_amqp_message(message)
 
                 except Exception as e:
                     print(e)
