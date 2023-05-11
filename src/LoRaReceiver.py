@@ -5,6 +5,7 @@ import RPi.GPIO as GPIO
 from time import sleep
 from . import lcd_i2c
 import json
+import asyncio
 # Load environment variables from .env file
 load_dotenv()
 
@@ -15,8 +16,7 @@ display = lcd_i2c.lcd()
 
 async def receive(lora):
     amqp_connection = amqp_controller.AMQPConnection(rabbitmq_server)
-    await amqp_connection.connect()
-
+    await connect_to_rabbitmq(amqp_connection)
     try:
         print("LoRa Receiver")
         while True:
@@ -44,6 +44,18 @@ async def receive(lora):
         print("Keyboard interrupt detected.")
     finally:
         await amqp_connection.close()
+
+
+async def connect_to_rabbitmq(amqp_connection):
+    while True:
+        try:
+            await amqp_connection.connect()
+            print("Connection to RabbitMQ established successfully.")
+            break
+        except Exception as e:
+            print(
+                f"{e}. Retrying in 5 seconds...")
+            await asyncio.sleep(5)
 
 
 def get_formatted_datetime(dt):
