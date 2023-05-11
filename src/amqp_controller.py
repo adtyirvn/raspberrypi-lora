@@ -10,8 +10,8 @@ load_dotenv()
 rabbitmq_server = os.getenv('RABBITMQ_SERVER')
 
 
-class RabbitMQConnectionError(Exception):
-    pass
+# class RabbitMQConnectionError(Exception):
+#     pass
 
 
 class AMQPConnection:
@@ -32,10 +32,14 @@ class AMQPConnection:
         await self.connection.close()
 
     async def send_amqp_message(self, message):
-        await self.channel.default_exchange.publish(
-            aio_pika.Message(
-                body=message.encode('utf-8'),
-                delivery_mode=aio_pika.DeliveryMode.NOT_PERSISTENT
-            ),
-            routing_key='ecg:esp32'
-        )
+        try:
+            await self.channel.default_exchange.publish(
+                aio_pika.Message(
+                    body=message.encode('utf-8'),
+                    delivery_mode=aio_pika.DeliveryMode.NOT_PERSISTENT
+                ),
+                routing_key='ecg:esp32'
+            )
+            print(f"*** Message send ***\n{message}")
+        except Exception as e:
+            raise Exception(f"Error sending message: {e}")
