@@ -53,8 +53,7 @@ async def connect_to_rabbitmq(amqp_connection):
             print("Connection to RabbitMQ established successfully.")
             break
         except Exception as e:
-            print(
-                f"{e}. Retrying in 5 seconds...")
+            print(f"{e}. Retrying in 5 seconds...")
             await asyncio.sleep(5)
 
 
