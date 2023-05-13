@@ -2,6 +2,12 @@ import asyncio
 from src import sx127x
 from src import config_lora
 from src import LoRaReceiver
+import os
+from dotenv import load_dotenv
+load_dotenv()
+
+key = os.getenv("ENCRYPT_KEY")
+nonce_g = os.getenv("ENCYPT_NONCE")
 
 
 async def main():
@@ -10,7 +16,7 @@ async def main():
                                       pin_id_ss=config_lora.Controller.PIN_ID_FOR_LORA_SS,
                                       pin_id_RxDone=config_lora.Controller.PIN_ID_FOR_LORA_DIO0)
     print('lora', lora)
-    await LoRaReceiver.receive(lora)
+    await LoRaReceiver.receive(lora, key, nonce_g)
 
 try:
     asyncio.run(main())

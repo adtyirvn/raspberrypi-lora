@@ -17,11 +17,8 @@ display = lcd_i2c.lcd()
 
 asc = ascon.Ascon()
 
-key = os.getenv("ENCRYPT_KEY")
-nonce_g = os.getenv("ENCYPT_NONCE")
 
-
-async def receive(lora):
+async def receive(lora, key, nonce_g):
     amqp_connection = amqp_controller.AMQPConnection(rabbitmq_server)
     await connect_to_rabbitmq(amqp_connection)
     try:
