@@ -29,17 +29,15 @@ async def receive(lora):
                     payload = lora.read_payload()
                     plaintext, nonce = decryption(
                         asc, binascii.unhexlify(payload), key, nonce, "CBC")
-                    message = plaintext.decode("utf-8")
-                    message_json = json.loads(message)
-                    show_info(display, message_json)
-                    print("\n*** Received message ***\n{}".format(message))
-                    print("with RSSI: {}\n".format(lora.packetRssi()))
+                    show_info(display, plaintext, lora)
                     await amqp_connection.send_amqp_message(payload)
                 except Exception as e:
                     print(e)
     except KeyboardInterrupt:
-        display.lcd_clear()
         print("Keyboard interrupt detected.")
+        display.lcd_clear()
+        show_on_lcd(display, ["Exit", "Conn Close"], 2)
+
     finally:
         await amqp_connection.close()
 
@@ -49,6 +47,7 @@ async def connect_to_rabbitmq(amqp_connection, display):
         try:
             await amqp_connection.connect()
             print("Connection to RabbitMQ established successfully.")
+            show_on_lcd(display, ["Connect RabbitMQ", "Success"])
             break
         except Exception as e:
             print(f"{e}. Retrying in 5 seconds...")
@@ -56,15 +55,14 @@ async def connect_to_rabbitmq(amqp_connection, display):
             await asyncio.sleep(5)
 
 
-def show_info(display, message_json):
-    temp = f'T: {message_json["t"]}C'
-    hum = f'H: {message_json["h"]}%'
-    display.lcd_display_string(
-        get_formatted_date(message_json["tsp"]), 1)
-    display.lcd_display_string(
-        get_formatted_time(message_json["tsp"]), 1, 10)
-    display.lcd_display_string(temp, 2)
-    display.lcd_display_string(hum, 2, 7)
+def show_info(display, plaintext, lora):
+    message = plaintext.decode("utf-8")
+    message_json = json.loads(message)
+    th = f"T: {message_json['t']}C H: {message_json['h']}%"
+    tm = f"{get_formatted_date(message_json['tsp'])}"
+    show_on_lcd(display, [th, tm])
+    print(f"\n*** Received message ***\n{message_json}")
+    print(f"with RSSI: {lora.packetRssi()}\n")
 
 
 def show_on_lcd(lcd, items, delay=0):
@@ -74,11 +72,7 @@ def show_on_lcd(lcd, items, delay=0):
 
 
 def get_formatted_date(date_tuple):
-    return f"{date_tuple[0]:04d}-{date_tuple[1]:02d}-{date_tuple[2]:02d}"
-
-
-def get_formatted_time(time_tuple):
-    return f"{time_tuple[4]:02d}:{time_tuple[5]:02d}"
+    return f"{date_tuple[0]:04d}-{date_tuple[1]:02d}-{date_tuple[2]:02d} {date_tuple[4]:02d}:{date_tuple[5]:02d}"
 
 
 def decryption(ascon, ciphertext, key, nonce, mode="ECB"):
