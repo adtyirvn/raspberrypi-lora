@@ -33,7 +33,7 @@ async def receive(lora):
                 lora.blink_led()
                 try:
                     payload = lora.read_payload()
-                    plaintext = asc.decryption(
+                    plaintext = decryption(
                         asc, binascii.unhexlify(payload), key, nonce, mode="CBC")
                     message = plaintext.decode("utf-8")
                     message_json = json.loads(message)
