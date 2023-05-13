@@ -64,6 +64,8 @@ async def connect_to_rabbitmq(amqp_connection):
             break
         except Exception as e:
             print(f"{e}. Retrying in 5 seconds...")
+            display.lcd_display_string("Err connect to", 1)
+            display.lcd_display_string("RabbitMQ Broker", 2)
             await asyncio.sleep(5)
 
 
