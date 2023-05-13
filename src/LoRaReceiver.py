@@ -62,7 +62,7 @@ async def show_info(plaintext, lora):
     message = plaintext.decode("utf-8")
     message_json = json.loads(message)
     th = f"T: {message_json['t']}C H: {message_json['h']}%"
-    tm = f"{get_formatted_date(message_json['tsp'])}"
+    tm = f"{await get_formatted_date(message_json['tsp'])}"
     show_on_lcd([th, tm])
     print(f"\n*** Received message ***\n{message_json}")
     print(f"with RSSI: {lora.packetRssi()}\n")
