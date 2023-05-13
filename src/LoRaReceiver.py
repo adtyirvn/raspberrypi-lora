@@ -33,9 +33,9 @@ async def receive(lora):
                     payload = lora.read_payload()
                     print(payload)
                     print(binascii.unhexlify(payload))
-                    # plaintext = decryption(
-                    #     asc, binascii.unhexlify(payload), key, nonce_g, "CBC")
-                    # print(plaintext)
+                    plaintext = decryption(
+                        asc, binascii.unhexlify(payload), key, nonce_g)
+                    print(plaintext)
                     # message = plaintext.decode("utf-8")
                     # message_json = json.loads(message)
                     # print("*** Received message ***\n{}".format(message))
@@ -87,6 +87,8 @@ def get_formatted_time(time_tuple):
 
 
 def decryption(ascon, ciphertext, key, nonce, mode="ECB"):
+    print(f"key: {binascii.hexlify(key)} len: {len(key)}")
+    print(f"nonce: {binascii.hexlify(nonce)} len: {len(key)}")
     plaintext = ascon.ascon_decrypt(
         key, nonce, associateddata="", ciphertext=ciphertext,  variant="Ascon-128")
     if mode == "CBC":
