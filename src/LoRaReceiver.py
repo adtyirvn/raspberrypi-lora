@@ -8,10 +8,9 @@ import json
 import asyncio
 from . import ascon
 import binascii
-# Load environment variables from .env file
+
 load_dotenv()
 
-# Access environment variables
 display = lcd_i2c.lcd()
 
 asc = ascon.Ascon()
@@ -30,17 +29,13 @@ async def receive(lora):
                 lora.blink_led()
                 try:
                     payload = lora.read_payload()
-                    # print(payload)
-                    # print(binascii.unhexlify(payload))
                     plaintext, nonce = decryption(
                         asc, binascii.unhexlify(payload), key, nonce, "CBC")
-                    # print(plaintext)
                     message = plaintext.decode("utf-8")
                     message_json = json.loads(message)
                     print("*** Received message ***\n{}".format(message))
-                    show_info(display, message_json)
                     print("with RSSI: {}\n".format(lora.packetRssi()))
-                    # Invoke the method to send the message as AMQP
+                    show_info(display, message_json)
                     await amqp_connection.send_amqp_message(payload)
                 except Exception as e:
                     print(e)
@@ -60,20 +55,16 @@ async def connect_to_rabbitmq(amqp_connection):
         except Exception as e:
             print(f"{e}. Retrying in 5 seconds...")
             show_on_lcd(display, ["Err connect to", "RabbitMQ Broker"])
-            # display.lcd_display_string("Err connect to", 1)
-            # display.lcd_display_string("RabbitMQ Broker", 2)
             await asyncio.sleep(5)
 
 
-def show_info(display, message_json):
-    temp = f'T: {str(message_json["t"])}C'
-    hum = f'H: {str(message_json["h"])}%'
+def show_info(display, mes):
+    temp = f'T: {str(mes["t"])}C'
+    hum = f'H: {str(mes["h"])}%'
     display.lcd_display_string(
-        get_formatted_date(message_json["tsp"]), 1)
+        get_formatted_date(mes["tsp"]), 1)
     display.lcd_display_string(
-        get_formatted_time(message_json["tsp"]), 1, 10)
-    # display.lcd_display_string(temp, 2)
-    # display.lcd_display_string(hum, 2, 8)
+        get_formatted_time(mes["tsp"]), 1, 12)
     show_on_lcd(display, [temp, hum])
 
 
@@ -88,7 +79,7 @@ def get_formatted_date(date_tuple):
 
 
 def get_formatted_time(time_tuple):
-    return f"{time_tuple[4]:02d}:{time_tuple[5]:02d}:{time_tuple[6]:02d}"
+    return f"{time_tuple[4]:02d}:{time_tuple[5]:02d}"
 
 
 def decryption(ascon, ciphertext, key, nonce, mode="ECB"):
