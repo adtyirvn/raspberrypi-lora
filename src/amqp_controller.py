@@ -24,8 +24,9 @@ class AMQPConnection:
             self.connection = await aio_pika.connect_robust(self.host)
             self.channel = await self.connection.channel()
             await self.channel.declare_queue('ecg:esp32', durable=False)
+            return "success"
         except Exception as e:
-            raise Exception(f"Error connecting to RabbitMQ: {e}")
+            print(f"Error connecting to RabbitMQ: {e}")
 
     async def close(self):
         await self.connection.close()
