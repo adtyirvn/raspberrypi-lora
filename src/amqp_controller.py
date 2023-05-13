@@ -39,6 +39,6 @@ class AMQPConnection:
                 ),
                 routing_key='ecg:esp32'
             )
-            print(f"*** Message send ***\n{message}")
+            print(f"*** Message send ***\n{message}\n")
         except Exception as e:
             raise Exception(f"Error sending message: {e}")
