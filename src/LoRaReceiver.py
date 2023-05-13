@@ -17,8 +17,11 @@ display = lcd_i2c.lcd()
 
 asc = ascon.Ascon()
 
+key = os.getenv("ENCRYPT_KEY")
+nonce_g = os.getenv("ENCYPT_NONCE")
 
-async def receive(lora, key, nonce_g):
+
+async def receive(lora):
     amqp_connection = amqp_controller.AMQPConnection(rabbitmq_server)
     await connect_to_rabbitmq(amqp_connection)
     try:
@@ -31,7 +34,7 @@ async def receive(lora, key, nonce_g):
                     print(payload)
                     print(binascii.unhexlify(payload))
                     plaintext = decryption(
-                        asc, binascii.unhexlify(payload), key, nonce_g)
+                        asc, binascii.unhexlify(payload), key, nonce_g, "CBC")
                     print(plaintext)
                     # message = plaintext.decode("utf-8")
                     # message_json = json.loads(message)
