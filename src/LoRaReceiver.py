@@ -88,11 +88,12 @@ def get_formatted_time(time_tuple):
 
 def decryption(ascon, ciphertext, key, nonce, mode="ECB"):
     key_bytes = key.encode('utf-8')
-    nonce_bytes = nonce.encode('utf-8')
-    print(f"key: {binascii.hexlify(key_bytes)} len: {len(key_bytes)}")
-    print(f"nonce: {binascii.hexlify(nonce_bytes)} len: {len(nonce_bytes)}")
+    if type(nonce) == str:
+        nonce = nonce.encode('utf-8')
+    print(f"key: {key_bytes} len: {len(key_bytes)}")
+    print(f"nonce: {nonce} len: {len(nonce)}")
     plaintext = ascon.ascon_decrypt(
-        key_bytes, nonce_bytes, associateddata="", ciphertext=ciphertext,  variant="Ascon-128")
+        key_bytes, nonce, associateddata="", ciphertext=ciphertext,  variant="Ascon-128")
     if mode == "CBC":
         global nonce_g
         nonce_g = ciphertext[:16]
