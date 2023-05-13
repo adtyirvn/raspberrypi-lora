@@ -50,7 +50,7 @@ async def receive(lora):
         print("Keyboard interrupt detected.")
         await amqp_connection.close()
         display.lcd_display_string("closing", 1)
-        display.lcd_display_string("goodbye...", 1)
+        display.lcd_display_string("goodbye...", 2)
         sleep(5)
         display.lcd_clear()
 
@@ -65,7 +65,7 @@ async def connect_to_rabbitmq(amqp_connection):
             print("connected")
             display.lcd_clear()
             display.lcd_display_string("connected", 1)
-            sleep(5)
+            sleep(3)
             break
         except Exception as e:
             print(e)
