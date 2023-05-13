@@ -19,8 +19,9 @@ async def receive(lora):
     key = os.getenv("ENCRYPT_KEY")
     nonce = os.getenv("ENCYPT_NONCE")
     amqp_connection = amqp_controller.AMQPConnection(rabbitmq_server)
-    await connect_to_rabbitmq(amqp_connection, display)
+
     try:
+        await connect_to_rabbitmq(amqp_connection, display)
         print("LoRa Receiver")
         while True:
             if lora.receivedPacket():
@@ -49,9 +50,7 @@ async def connect_to_rabbitmq(amqp_connection, display):
         try:
             await amqp_connection.connect()
             print("Connection to RabbitMQ established successfully.")
-            show_on_lcd(display, ["Connect to", "RabbitMQ Broker"])
-            await asyncio.sleep(2)
-            break
+            return "success"
         except Exception as e:
             print(f"{e}. Retrying in 5 seconds...")
             show_on_lcd(display, ["Err connect to", "RabbitMQ Broker"])
