@@ -20,7 +20,7 @@ async def receive(lora):
     key = os.getenv("ENCRYPT_KEY")
     nonce = os.getenv("ENCYPT_NONCE")
     amqp_connection = amqp_controller.AMQPConnection(rabbitmq_server)
-    await connect_to_rabbitmq(amqp_connection, display)
+    await connect_to_rabbitmq(amqp_connection)
     try:
         print("LoRa Receiver")
         while True:
