@@ -48,10 +48,11 @@ async def connect_to_rabbitmq(amqp_connection):
         try:
             await amqp_connection.connect()
             print("Connection to RabbitMQ established successfully.")
-            show_on_lcd(["Connect RabbitMQ", "Success"])
+            # show_on_lcd(["Connect RabbitMQ", "Success"])
             break
         except Exception as e:
             print(f"{e}. Retrying in 5 seconds...")
+            display.lcd_clear()
             display.lcd_display_string("Err connect to", 1)
             display.lcd_display_string("RabbitMQ Broker", 2)
             await asyncio.sleep(5)
@@ -68,6 +69,7 @@ def show_info(plaintext, lora):
 
 
 def show_on_lcd(items, delay=0):
+    display.lcd_clear()
     for x, text in enumerate(items):
         display.lcd_display_string(text, x)
     sleep(delay)
