@@ -91,9 +91,9 @@ def decryption(ascon, ciphertext, key, nonce, mode="ECB"):
     nonce_bytes = nonce.encode('utf-8')
     print(f"key: {binascii.hexlify(key_bytes)} len: {len(key_bytes)}")
     print(f"nonce: {binascii.hexlify(nonce_bytes)} len: {len(nonce_bytes)}")
-    # plaintext = ascon.ascon_decrypt(
-    #     key, nonce, associateddata="", ciphertext=ciphertext,  variant="Ascon-128")
-    # if mode == "CBC":
-    #     global nonce_g
-    #     nonce_g = ciphertext[:16]
-    return "haha"
+    plaintext = ascon.ascon_decrypt(
+        key, nonce, associateddata="", ciphertext=ciphertext,  variant="Ascon-128")
+    if mode == "CBC":
+        global nonce_g
+        nonce_g = ciphertext[:16]
+    return plaintext
