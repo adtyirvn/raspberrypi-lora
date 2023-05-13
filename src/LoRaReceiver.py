@@ -33,9 +33,7 @@ async def receive(lora):
                 lora.blink_led()
                 try:
                     payload = lora.read_payload()
-                    hex_str = payload.decode('utf-8')
-                    hex_byte = hex_str.encode('')
-                    print(hex_byte)
+                    print(payload)
                     # print(binascii.unhexlify(payload))
                     plaintext = decryption(
                         asc, binascii.unhexlify(payload), key, nonce, mode="CBC")
