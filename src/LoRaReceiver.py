@@ -32,9 +32,9 @@ async def receive(lora):
                 try:
                     payload = lora.read_payload()
                     print(payload)
-                    plaintext = decryption(
-                        asc, binascii.unhexlify(payload), key, nonce_g, "CBC")
-                    print(plaintext)
+                    # plaintext = decryption(
+                    #     asc, binascii.unhexlify(payload), key, nonce_g, "CBC")
+                    # print(plaintext)
                     # message = plaintext.decode("utf-8")
                     # message_json = json.loads(message)
                     # print("*** Received message ***\n{}".format(message))
