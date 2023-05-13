@@ -11,12 +11,10 @@ import binascii
 
 load_dotenv()
 
-display = lcd_i2c.lcd()
-
-asc = ascon.Ascon()
-
 
 async def receive(lora):
+    display = lcd_i2c.lcd()
+    asc = ascon.Ascon()
     rabbitmq_server = os.getenv('RABBITMQ_SERVER')
     key = os.getenv("ENCRYPT_KEY")
     nonce = os.getenv("ENCYPT_NONCE")
@@ -42,7 +40,7 @@ async def receive(lora):
                     # display.lcd_display_string(
                     #     get_formatted_time(message_json["tsp"]), 1, 12)
                     # show_on_lcd(display, [temp, hum])
-                    print("*** Received message ***\n{}".format(message))
+                    print("\n*** Received message ***\n{}".format(message))
                     print("with RSSI: {}\n".format(lora.packetRssi()))
                     await amqp_connection.send_amqp_message(payload)
                 except Exception as e:
