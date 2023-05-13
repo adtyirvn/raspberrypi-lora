@@ -17,8 +17,8 @@ display = lcd_i2c.lcd()
 
 asc = ascon.Ascon()
 
-key = ENCRYPT_KEY
-nonce = ENCYPT_NONCE
+key = os.getenv("ENCRYPT_KEY")
+nonce = os.getenv("ENCYPT_NONCE")
 
 nonce_g = {}
 
@@ -35,13 +35,13 @@ async def receive(lora):
                     payload = lora.read_payload()
                     plaintext = asc.decryption(
                         asc, binascii.unhexlify(payload), key, nonce, mode="CBC")
-                    message = plaintext.decode('utf-8')
+                    message = plaintext.decode("utf-8")
                     message_json = json.loads(message)
                     print("*** Received message ***\n{}".format(message))
                     temp = f'T: {str(message_json["t"])}C'
                     hum = f'H: {str(message_json["h"])}%'
                     display.lcd_display_string(
-                        get_formatted_datetime(message_json["tsp"]), 1)
+                        get_formatted_date(message_json["tsp"]), 1)
                     display.lcd_display_string(temp, 2)
                     display.lcd_display_string(hum, 2, 8)
                     print("with RSSI: {}\n".format(lora.packetRssi()))
@@ -73,6 +73,14 @@ def get_formatted_datetime(dt):
         datetime_tuple[0], datetime_tuple[1], datetime_tuple[2],
         datetime_tuple[4], datetime_tuple[5])
     return formatted_datetime
+
+
+def get_formatted_date(date_tuple):
+    return f"{date_tuple[0]:04d}-{date_tuple[1]:02d}-{date_tuple[2]:02d}"
+
+
+def get_formatted_time(time_tuple):
+    return f"{time_tuple[4]:02d}:{time_tuple[5]:02d}:{time_tuple[6]:02d}"
 
 
 def decryption(ascon, ciphertext, key, nonce, mode="ECB"):

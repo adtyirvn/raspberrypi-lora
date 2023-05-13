@@ -1,7 +1,6 @@
 import os
 from dotenv import load_dotenv
 import aio_pika
-import asyncio
 
 # Load environment variables from .env file
 load_dotenv()
