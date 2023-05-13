@@ -31,23 +31,23 @@ async def receive(lora):
                 lora.blink_led()
                 try:
                     payload = lora.read_payload()
-                    print(payload)
-                    print(binascii.unhexlify(payload))
+                    # print(payload)
+                    # print(binascii.unhexlify(payload))
                     plaintext = decryption(
                         asc, binascii.unhexlify(payload), key, nonce_g, "CBC")
-                    print(plaintext)
-                    # message = plaintext.decode("utf-8")
-                    # message_json = json.loads(message)
-                    # print("*** Received message ***\n{}".format(message))
-                    # temp = f'T: {str(message_json["t"])}C'
-                    # hum = f'H: {str(message_json["h"])}%'
-                    # display.lcd_display_string(
-                    #     get_formatted_date(message_json["tsp"]), 1)
-                    # display.lcd_display_string(temp, 2)
-                    # display.lcd_display_string(hum, 2, 8)
-                    # print("with RSSI: {}\n".format(lora.packetRssi()))
-                    # # Invoke the method to send the message as AMQP
-                    # await amqp_connection.send_amqp_message(message)
+                    # print(plaintext)
+                    message = plaintext.decode("utf-8")
+                    message_json = json.loads(message)
+                    print("*** Received message ***\n{}".format(message))
+                    temp = f'T: {str(message_json["t"])}C'
+                    hum = f'H: {str(message_json["h"])}%'
+                    display.lcd_display_string(
+                        get_formatted_date(message_json["tsp"]), 1)
+                    display.lcd_display_string(temp, 2)
+                    display.lcd_display_string(hum, 2, 8)
+                    print("with RSSI: {}\n".format(lora.packetRssi()))
+                    # Invoke the method to send the message as AMQP
+                    await amqp_connection.send_amqp_message(payload)
                 except Exception as e:
                     print(e)
     except KeyboardInterrupt:
