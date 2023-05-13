@@ -27,9 +27,9 @@ async def receive(lora):
                 lora.blink_led()
                 try:
                     payload = lora.read_payload()
-                    plaintext, nonce = decryption(
+                    plaintext, nonce = await decryption(
                         asc, binascii.unhexlify(payload), key, nonce, "CBC")
-                    show_info(plaintext, lora)
+                    await show_info(plaintext, lora)
                     await amqp_connection.send_amqp_message(payload)
                 except Exception as e:
                     print(e)
@@ -48,7 +48,7 @@ async def connect_to_rabbitmq(amqp_connection):
         try:
             await amqp_connection.connect()
             print("Connection to RabbitMQ established successfully.")
-            # show_on_lcd(["Connect RabbitMQ", "Success"])
+            await show_on_lcd(["Connect RabbitMQ", "Success"])
             break
         except Exception as e:
             print(f"{e}. Retrying in 5 seconds...")
@@ -58,7 +58,7 @@ async def connect_to_rabbitmq(amqp_connection):
             await asyncio.sleep(5)
 
 
-def show_info(plaintext, lora):
+async def show_info(plaintext, lora):
     message = plaintext.decode("utf-8")
     message_json = json.loads(message)
     th = f"T: {message_json['t']}C H: {message_json['h']}%"
@@ -68,18 +68,18 @@ def show_info(plaintext, lora):
     print(f"with RSSI: {lora.packetRssi()}\n")
 
 
-def show_on_lcd(items, delay=0):
+async def show_on_lcd(items, delay=0):
     display.lcd_clear()
     for x, text in enumerate(items):
         display.lcd_display_string(text, x)
     sleep(delay)
 
 
-def get_formatted_date(date_tuple):
+async def get_formatted_date(date_tuple):
     return f"{date_tuple[0]:04d}-{date_tuple[1]:02d}-{date_tuple[2]:02d} {date_tuple[4]:02d}:{date_tuple[5]:02d}"
 
 
-def decryption(ascon, ciphertext, key, nonce, mode="ECB"):
+async def decryption(ascon, ciphertext, key, nonce, mode="ECB"):
     key_bytes = key.encode('utf-8')
     if not isinstance(nonce, bytes):
         nonce = nonce.encode('utf-8')
