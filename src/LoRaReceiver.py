@@ -12,16 +12,15 @@ import binascii
 load_dotenv()
 
 # Access environment variables
-rabbitmq_server = os.getenv('RABBITMQ_SERVER')
 display = lcd_i2c.lcd()
 
 asc = ascon.Ascon()
 
-key = os.getenv("ENCRYPT_KEY")
-nonce_g = os.getenv("ENCYPT_NONCE")
-
 
 async def receive(lora):
+    rabbitmq_server = os.getenv('RABBITMQ_SERVER')
+    key = os.getenv("ENCRYPT_KEY")
+    nonce = os.getenv("ENCYPT_NONCE")
     amqp_connection = amqp_controller.AMQPConnection(rabbitmq_server)
     await connect_to_rabbitmq(amqp_connection)
     try:
@@ -33,18 +32,13 @@ async def receive(lora):
                     payload = lora.read_payload()
                     # print(payload)
                     # print(binascii.unhexlify(payload))
-                    plaintext = decryption(
-                        asc, binascii.unhexlify(payload), key, nonce_g, "CBC")
+                    plaintext, nonce = decryption(
+                        asc, binascii.unhexlify(payload), key, nonce, "CBC")
                     # print(plaintext)
                     message = plaintext.decode("utf-8")
                     message_json = json.loads(message)
                     print("*** Received message ***\n{}".format(message))
-                    temp = f'T: {str(message_json["t"])}C'
-                    hum = f'H: {str(message_json["h"])}%'
-                    display.lcd_display_string(
-                        get_formatted_date(message_json["tsp"]), 1)
-                    display.lcd_display_string(temp, 2)
-                    display.lcd_display_string(hum, 2, 8)
+                    show_info(display, message_json)
                     print("with RSSI: {}\n".format(lora.packetRssi()))
                     # Invoke the method to send the message as AMQP
                     await amqp_connection.send_amqp_message(payload)
@@ -65,17 +59,28 @@ async def connect_to_rabbitmq(amqp_connection):
             break
         except Exception as e:
             print(f"{e}. Retrying in 5 seconds...")
-            display.lcd_display_string("Err connect to", 1)
-            display.lcd_display_string("RabbitMQ Broker", 2)
+            show_on_lcd(display, ["Err connect to", "RabbitMQ Broker"])
+            # display.lcd_display_string("Err connect to", 1)
+            # display.lcd_display_string("RabbitMQ Broker", 2)
             await asyncio.sleep(5)
 
 
-def get_formatted_datetime(dt):
-    datetime_tuple = dt
-    formatted_datetime = "{:04d}-{:02d}-{:02d} {:02d}:{:02d}".format(
-        datetime_tuple[0], datetime_tuple[1], datetime_tuple[2],
-        datetime_tuple[4], datetime_tuple[5])
-    return formatted_datetime
+def show_info(display, message_json):
+    temp = f'T: {str(message_json["t"])}C'
+    hum = f'H: {str(message_json["h"])}%'
+    display.lcd_display_string(
+        get_formatted_date(message_json["tsp"]), 1)
+    display.lcd_display_string(
+        get_formatted_time(message_json["tsp"]), 1, 10)
+    # display.lcd_display_string(temp, 2)
+    # display.lcd_display_string(hum, 2, 8)
+    show_on_lcd(display, [temp, hum])
+
+
+def show_on_lcd(lcd, items, delay=0):
+    for x, text in enumerate(items):
+        lcd.lcd_display_string(text, x)
+    sleep(delay)
 
 
 def get_formatted_date(date_tuple):
@@ -88,13 +93,12 @@ def get_formatted_time(time_tuple):
 
 def decryption(ascon, ciphertext, key, nonce, mode="ECB"):
     key_bytes = key.encode('utf-8')
-    if type(nonce) == str:
+    if not isinstance(nonce, bytes):
         nonce = nonce.encode('utf-8')
     print(f"key: {key_bytes} len: {len(key_bytes)}")
     print(f"nonce: {nonce} len: {len(nonce)}")
     plaintext = ascon.ascon_decrypt(
         key_bytes, nonce, associateddata="", ciphertext=ciphertext,  variant="Ascon-128")
     if mode == "CBC":
-        global nonce_g
-        nonce_g = ciphertext[:16]
-    return plaintext
+        new_nonce = ciphertext[:16]
+    return plaintext, new_nonce

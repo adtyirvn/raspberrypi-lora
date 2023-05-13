@@ -34,7 +34,7 @@ class AMQPConnection:
         try:
             await self.channel.default_exchange.publish(
                 aio_pika.Message(
-                    body=message.encode('utf-8'),
+                    body=message,
                     delivery_mode=aio_pika.DeliveryMode.NOT_PERSISTENT
                 ),
                 routing_key='ecg:esp32'
