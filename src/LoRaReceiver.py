@@ -36,7 +36,8 @@ async def receive(lora):
     except KeyboardInterrupt:
         print("Keyboard interrupt detected.")
         display.lcd_clear()
-        show_on_lcd(display, ["Exit", "Conn Close"], 2)
+        display.lcd_display_string("Exit", 1)
+        display.lcd_display_string("Conn Close", 2)
 
     finally:
         await amqp_connection.close()
@@ -51,7 +52,8 @@ async def connect_to_rabbitmq(amqp_connection):
             break
         except Exception as e:
             print(f"{e}. Retrying in 5 seconds...")
-            show_on_lcd(display, ["Err connect to", "RabbitMQ Broker"])
+            display.lcd_display_string("Err connect to", 1)
+            display.lcd_display_string("RabbitMQ Broker", 2)
             await asyncio.sleep(5)
 
 
