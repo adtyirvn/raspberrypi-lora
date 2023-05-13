@@ -19,7 +19,7 @@ async def receive(lora):
     key = os.getenv("ENCRYPT_KEY")
     nonce = os.getenv("ENCYPT_NONCE")
     amqp_connection = amqp_controller.AMQPConnection(rabbitmq_server)
-    await connect_to_rabbitmq(amqp_connection, display)
+    await amqp_connection.connect()
     try:
         print("LoRa Receiver")
         while True:
@@ -42,17 +42,6 @@ async def receive(lora):
         print("Keyboard interrupt detected.")
     finally:
         await amqp_connection.close()
-
-
-async def connect_to_rabbitmq(amqp_connection, display):
-    while True:
-        result = await amqp_connection.connect()
-        if result == 'success':
-            print("Connection to RabbitMQ established successfully.")
-            break
-        else:
-            print("Restarting 5 second")
-        asyncio.sleep(5)
 
 
 def show_info(display, message_json):
