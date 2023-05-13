@@ -6,12 +6,21 @@ from time import sleep
 from . import lcd_i2c
 import json
 import asyncio
+from . import ascon
+import binascii
 # Load environment variables from .env file
 load_dotenv()
 
 # Access environment variables
 rabbitmq_server = os.getenv('RABBITMQ_SERVER')
 display = lcd_i2c.lcd()
+
+asc = ascon.Ascon()
+
+key = ENCRYPT_KEY
+nonce = ENCYPT_NONCE
+
+nonce_g = {}
 
 
 async def receive(lora):
@@ -24,19 +33,20 @@ async def receive(lora):
                 lora.blink_led()
                 try:
                     payload = lora.read_payload()
-                    message = payload.decode('utf-8')
+                    plaintext = asc.decryption(
+                        asc, binascii.unhexlify(payload), key, nonce, mode="CBC")
+                    message = plaintext.decode('utf-8')
                     message_json = json.loads(message)
                     print("*** Received message ***\n{}".format(message))
-                    temp = f'T: {str(message_json["temperature"])}C'
-                    hum = f'H: {str(message_json["humidity"])}%'
+                    temp = f'T: {str(message_json["t"])}C'
+                    hum = f'H: {str(message_json["h"])}%'
                     display.lcd_display_string(
-                        get_formatted_datetime(message_json["timestamp"]), 1)
+                        get_formatted_datetime(message_json["tsp"]), 1)
                     display.lcd_display_string(temp, 2)
                     display.lcd_display_string(hum, 2, 8)
                     print("with RSSI: {}\n".format(lora.packetRssi()))
                     # Invoke the method to send the message as AMQP
                     await amqp_connection.send_amqp_message(message)
-
                 except Exception as e:
                     print(e)
     except KeyboardInterrupt:
@@ -63,3 +73,14 @@ def get_formatted_datetime(dt):
         datetime_tuple[0], datetime_tuple[1], datetime_tuple[2],
         datetime_tuple[4], datetime_tuple[5])
     return formatted_datetime
+
+
+def decryption(ascon, ciphertext, key, nonce, mode="ECB"):
+    print(f"key: {binascii.hexlify(key)} len: {len(key)}")
+    print(f"nonce: {binascii.hexlify(nonce)} len: {len(key)}")
+    plaintext = ascon.ascon_decrypt(
+        key, nonce, associateddata="", ciphertext=ciphertext,  variant="Ascon-128")
+    if mode == "CBC":
+        global nonce_g
+        nonce_g = ciphertext[:16]
+    return plaintext
