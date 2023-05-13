@@ -10,16 +10,17 @@ from . import ascon
 import binascii
 
 load_dotenv()
+display = lcd_i2c.lcd()
+asc = ascon.Ascon()
 
 
 async def receive(lora):
-    display = lcd_i2c.lcd()
-    asc = ascon.Ascon()
+
     rabbitmq_server = os.getenv('RABBITMQ_SERVER')
     key = os.getenv("ENCRYPT_KEY")
     nonce = os.getenv("ENCYPT_NONCE")
     amqp_connection = amqp_controller.AMQPConnection(rabbitmq_server)
-    await amqp_connection.connect()
+    await connect_to_rabbitmq(amqp_connection, display)
     try:
         print("LoRa Receiver")
         while True:
@@ -40,8 +41,22 @@ async def receive(lora):
     except KeyboardInterrupt:
         display.lcd_clear()
         print("Keyboard interrupt detected.")
-    finally:
         await amqp_connection.close()
+
+
+async def connect_to_rabbitmq(amqp_connection):
+    while True:
+        try:
+            print("connecting...")
+            display.lcd_display_string("connecting...", 1)
+            await amqp_connection.connect()
+            print("connected")
+            display.lcd_display_string("connected", 1)
+            break
+        except Exception as e:
+            print(e)
+            display.lcd_display_string("error connecting", 1)
+            sleep(1)
 
 
 def show_info(display, message_json):

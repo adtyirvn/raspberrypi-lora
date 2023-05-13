@@ -25,7 +25,7 @@ class AMQPConnection:
             self.channel = await self.connection.channel()
             await self.channel.declare_queue('ecg:esp32', durable=False)
         except Exception as e:
-            print(f"Error connecting to RabbitMQ: {e}")
+            raise Exception(f"Error connecting to RabbitMQ: {e}")
 
     async def close(self):
         await self.connection.close()
