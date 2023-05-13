@@ -60,11 +60,11 @@ def show_info(display, message_json):
     temp = f'T: {message_json["t"]}C'
     hum = f'H: {message_json["h"]}%'
     display.lcd_display_string(
-        get_formatted_date(message_json["tsp"]), 1, 0)
+        get_formatted_date(message_json["tsp"]), 1)
     display.lcd_display_string(
-        get_formatted_time(message_json["tsp"]), 1, 11)
-    display.lcd_display_string(temp, 2, 0)
-    display.lcd_display_string(hum, 2, 8)
+        get_formatted_time(message_json["tsp"]), 1, 10)
+    display.lcd_display_string(temp, 2)
+    display.lcd_display_string(hum, 2, 7)
 
 
 def show_on_lcd(lcd, items, delay=0):
