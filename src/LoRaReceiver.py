@@ -87,6 +87,8 @@ def get_formatted_time(time_tuple):
 
 
 def decryption(ascon, ciphertext, key, nonce, mode="ECB"):
+    print(key)
+    print(nonce)
     print(f"key: {binascii.hexlify(key)} len: {len(key)}")
     print(f"nonce: {binascii.hexlify(nonce)} len: {len(key)}")
     plaintext = ascon.ascon_decrypt(
