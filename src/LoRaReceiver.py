@@ -49,7 +49,7 @@ async def connect_to_rabbitmq(amqp_connection, display):
         try:
             await amqp_connection.connect()
             print("Connection to RabbitMQ established successfully.")
-            show_on_lcd(display, ["Connect to", "RabbitMQ Broker"])
+            # show_on_lcd(display, ["Connect to", "RabbitMQ Broker"])
             break
         except Exception as e:
             print(f"{e}. Retrying in 5 seconds...")
