@@ -33,8 +33,9 @@ async def receive(lora):
                     message_json = json.loads(message)
                     print(message_json)
                     temp = f'T: {message_json["t"]}C'
-                    hum = f'H: {str(message_json["h"])}%'
+                    hum = f'H: {message_json["h"]}%'
                     print(temp, hum)
+                    display.lcd_display_string(temp, 1)
                     # display.lcd_display_string(
                     #     get_formatted_date(message_json["tsp"]), 1)
                     # display.lcd_display_string(
