@@ -49,6 +49,7 @@ async def connect_to_rabbitmq(amqp_connection, display):
         try:
             await amqp_connection.connect()
             print("Connection to RabbitMQ established successfully.")
+            show_on_lcd(display, ["Connect to", "RabbitMQ Broker"])
             break
         except Exception as e:
             print(f"{e}. Retrying in 5 seconds...")
@@ -57,14 +58,10 @@ async def connect_to_rabbitmq(amqp_connection, display):
 
 
 def show_info(display, message_json):
-    temp = f'T: {message_json["t"]}C'
-    hum = f'H: {message_json["h"]}%'
-    display.lcd_display_string(
-        get_formatted_date(message_json["tsp"]), 1)
-    display.lcd_display_string(
-        get_formatted_time(message_json["tsp"]), 1, 10)
-    display.lcd_display_string(temp, 2)
-    display.lcd_display_string(hum, 2, 8)
+    th = f'T: {message_json["t"]}C H: {message_json["h"]}%'
+    time = f'{get_formatted_date(message_json["tsp"])} {get_formatted_time(message_json["tsp"])}'
+    display.lcd_display_string(time, 1)
+    display.lcd_display_string(th, 2)
 
 
 def show_on_lcd(lcd, items, delay=0):
