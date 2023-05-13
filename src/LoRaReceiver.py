@@ -31,16 +31,7 @@ async def receive(lora):
                         asc, binascii.unhexlify(payload), key, nonce, "CBC")
                     message = plaintext.decode("utf-8")
                     message_json = json.loads(message)
-                    print(message_json)
-                    temp = f'T: {message_json["t"]}C'
-                    hum = f'H: {message_json["h"]}%'
-                    print(temp, hum)
-                    display.lcd_display_string(
-                        get_formatted_date(message_json["tsp"]), 1)
-                    display.lcd_display_string(
-                        get_formatted_time(message_json["tsp"]), 1, 12)
-                    display.lcd_display_string(temp, 2, 1)
-                    display.lcd_display_string(hum, 2, 8)
+                    show_info(display, message_json)
                     print("\n*** Received message ***\n{}".format(message))
                     print("with RSSI: {}\n".format(lora.packetRssi()))
                     await amqp_connection.send_amqp_message(payload)
@@ -65,14 +56,15 @@ async def connect_to_rabbitmq(amqp_connection, display):
             await asyncio.sleep(5)
 
 
-def show_info(display, mes):
-    temp = f'T: {str(mes["t"])}C'
-    hum = f'H: {str(mes["h"])}%'
+def show_info(display, message_json):
+    temp = f'T: {message_json["t"]}C'
+    hum = f'H: {message_json["h"]}%'
     display.lcd_display_string(
-        get_formatted_date(mes["tsp"]), 1)
+        get_formatted_date(message_json["tsp"]), 1, 0)
     display.lcd_display_string(
-        get_formatted_time(mes["tsp"]), 1, 12)
-    show_on_lcd(display, [temp, hum])
+        get_formatted_time(message_json["tsp"]), 1, 11)
+    display.lcd_display_string(temp, 2, 0)
+    display.lcd_display_string(hum, 2, 8)
 
 
 def show_on_lcd(lcd, items, delay=0):
