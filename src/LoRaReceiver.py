@@ -29,7 +29,7 @@ async def receive(lora):
                     payload = lora.read_payload()
                     plaintext, nonce = decryption(
                         asc, binascii.unhexlify(payload), key, nonce, "CBC")
-                    show_info(display, plaintext, lora)
+                    show_info(plaintext, lora)
                     await amqp_connection.send_amqp_message(payload)
                 except Exception as e:
                     print(e)
@@ -48,7 +48,7 @@ async def connect_to_rabbitmq(amqp_connection):
         try:
             await amqp_connection.connect()
             print("Connection to RabbitMQ established successfully.")
-            show_on_lcd(display, ["Connect RabbitMQ", "Success"])
+            show_on_lcd(["Connect RabbitMQ", "Success"])
             break
         except Exception as e:
             print(f"{e}. Retrying in 5 seconds...")
@@ -57,19 +57,19 @@ async def connect_to_rabbitmq(amqp_connection):
             await asyncio.sleep(5)
 
 
-def show_info(display, plaintext, lora):
+def show_info(plaintext, lora):
     message = plaintext.decode("utf-8")
     message_json = json.loads(message)
     th = f"T: {message_json['t']}C H: {message_json['h']}%"
     tm = f"{get_formatted_date(message_json['tsp'])}"
-    show_on_lcd(display, [th, tm])
+    show_on_lcd([th, tm])
     print(f"\n*** Received message ***\n{message_json}")
     print(f"with RSSI: {lora.packetRssi()}\n")
 
 
-def show_on_lcd(lcd, items, delay=0):
+def show_on_lcd(items, delay=0):
     for x, text in enumerate(items):
-        lcd.lcd_display_string(text, x)
+        display.lcd_display_string(text, x)
     sleep(delay)
 
 
