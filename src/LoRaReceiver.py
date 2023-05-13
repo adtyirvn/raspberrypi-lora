@@ -33,6 +33,7 @@ async def receive(lora):
                         asc, binascii.unhexlify(payload), key, nonce, "CBC")
                     message = plaintext.decode("utf-8")
                     message_json = json.loads(message)
+                    print(message_json)
                     # temp = f'T: {str(message_json["t"])}C'
                     # hum = f'H: {str(message_json["h"])}%'
                     # display.lcd_display_string(
