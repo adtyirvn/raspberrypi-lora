@@ -32,7 +32,7 @@ async def receive(lora):
                     message = plaintext.decode("utf-8")
                     message_json = json.loads(message)
                     print(message_json)
-                    temp = f'T: {str(message_json["t"])}C'
+                    temp = f'T: {message_json["t"]}C'
                     hum = f'H: {str(message_json["h"])}%'
                     print(temp, hum)
                     # display.lcd_display_string(
