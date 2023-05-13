@@ -67,7 +67,7 @@ async def connect_to_rabbitmq(amqp_connection):
             print(f"{e}. Retrying in 5 seconds...")
             display.lcd_display_string("Err connect to", 1)
             display.lcd_display_string("RabbitMQ Broker", 2)
-            sleep(5)
+            await asyncio.sleep(5)
 
 
 def get_formatted_datetime(dt):
