@@ -45,6 +45,7 @@ async def receive(lora):
                 await amqp_connection.close()
                 display.lcd_display_string("exit", 1)
                 sleep(1)
+                display.lcd_clear()
                 break
 
 
@@ -68,7 +69,7 @@ async def connect_to_rabbitmq(amqp_connection):
 
 
 def show_info(display, message_json):
-    display.lcd_clear()
+    # display.lcd_clear()
     th = f'T: {message_json["t"]}C H: {message_json["h"]}%'
     time = f'{get_formatted_date(message_json["tsp"])}'
     display.lcd_display_string(time, 1)
@@ -89,8 +90,8 @@ def decryption(ascon, ciphertext, key, nonce, mode="ECB"):
     key_bytes = key.encode('utf-8')
     if not isinstance(nonce, bytes):
         nonce = nonce.encode('utf-8')
-    print(f"key: {key_bytes} len: {len(key_bytes)}")
-    print(f"nonce: {nonce} len: {len(nonce)}")
+    # print(f"key: {key_bytes} len: {len(key_bytes)}")
+    # print(f"nonce: {nonce} len: {len(nonce)}")
     plaintext = ascon.ascon_decrypt(
         key_bytes, nonce, associateddata="", ciphertext=ciphertext,  variant="Ascon-128")
     if mode == "CBC":

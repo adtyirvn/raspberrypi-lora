@@ -22,4 +22,7 @@ async def main():
     # print('lora', lora)
     await LoRaReceiver.receive(lora)
 
-asyncio.run(main())
+try:
+    asyncio.run(main())
+except Exception as e:
+    print("Exit")
