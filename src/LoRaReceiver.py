@@ -24,29 +24,32 @@ async def receive(lora):
 
     await connect_to_rabbitmq(amqp_connection)
     # print("LoRa Receiver")
-    while True:
-        if lora.receivedPacket():
-            lora.blink_led()
-            try:
-                payload = lora.read_payload()
-                plaintext, nonce = decryption(
-                    asc, binascii.unhexlify(payload), key, nonce, "CBC")
-                message = plaintext.decode("utf-8")
-                message_json = json.loads(message)
-                show_info(display, message_json)
-                print("\n*** Received message ***\n{}".format(message))
-                print("with RSSI: {}\n".format(lora.packetRssi()))
-                await amqp_connection.send_amqp_message(payload)
-            except Exception as e:
-                print(e)
-            except KeyboardInterrupt:
-                display.lcd_clear()
-                print("Keyboard interrupt detected.")
-                await amqp_connection.close()
-                display.lcd_display_string("exit", 1)
-                sleep(1)
-                display.lcd_clear()
-                break
+    display.lcd_clear()
+    display.lcd_display_string("waiting lora", 1)
+    print("waiting lora")
+    try:
+        while True:
+            if lora.receivedPacket():
+                lora.blink_led()
+                try:
+                    payload = lora.read_payload()
+                    plaintext, nonce = decryption(
+                        asc, binascii.unhexlify(payload), key, nonce, "CBC")
+                    message = plaintext.decode("utf-8")
+                    message_json = json.loads(message)
+                    show_info(display, message_json)
+                    print("\n*** Received message ***\n{}".format(message))
+                    print("with RSSI: {}\n".format(lora.packetRssi()))
+                    await amqp_connection.send_amqp_message(payload)
+                except Exception as e:
+                    print(e)
+    except KeyboardInterrupt:
+        display.lcd_clear()
+        print("Keyboard interrupt detected.")
+        await amqp_connection.close()
+        display.lcd_display_string("exit", 1)
+        sleep(1)
+        display.lcd_clear()
 
 
 async def connect_to_rabbitmq(amqp_connection):
