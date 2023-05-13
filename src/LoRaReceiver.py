@@ -33,9 +33,15 @@ async def receive(lora):
                         asc, binascii.unhexlify(payload), key, nonce, "CBC")
                     message = plaintext.decode("utf-8")
                     message_json = json.loads(message)
+                    temp = f'T: {str(message_json["t"])}C'
+                    hum = f'H: {str(message_json["h"])}%'
+                    display.lcd_display_string(
+                        get_formatted_date(message_json["tsp"]), 1)
+                    display.lcd_display_string(
+                        get_formatted_time(message_json["tsp"]), 1, 12)
+                    show_on_lcd(display, [temp, hum])
                     print("*** Received message ***\n{}".format(message))
                     print("with RSSI: {}\n".format(lora.packetRssi()))
-                    show_info(display, message_json)
                     await amqp_connection.send_amqp_message(payload)
                 except Exception as e:
                     print(e)
