@@ -19,7 +19,7 @@ async def receive(lora):
     key = os.getenv("ENCRYPT_KEY")
     nonce = os.getenv("ENCYPT_NONCE")
     amqp_connection = amqp_controller.AMQPConnection(rabbitmq_server)
-    await connect_to_rabbitmq(amqp_connection)
+    await connect_to_rabbitmq(amqp_connection, display)
     try:
         print("LoRa Receiver")
         while True:
@@ -35,12 +35,12 @@ async def receive(lora):
                     temp = f'T: {message_json["t"]}C'
                     hum = f'H: {message_json["h"]}%'
                     print(temp, hum)
-                    display.lcd_display_string(temp, 1)
-                    # display.lcd_display_string(
-                    #     get_formatted_date(message_json["tsp"]), 1)
-                    # display.lcd_display_string(
-                    #     get_formatted_time(message_json["tsp"]), 1, 12)
-                    # show_on_lcd(display, [temp, hum])
+                    display.lcd_display_string(
+                        get_formatted_date(message_json["tsp"]), 1)
+                    display.lcd_display_string(
+                        get_formatted_time(message_json["tsp"]), 1, 12)
+                    display.lcd_display_string(temp, 2, 1)
+                    display.lcd_display_string(hum, 2, 8)
                     print("\n*** Received message ***\n{}".format(message))
                     print("with RSSI: {}\n".format(lora.packetRssi()))
                     await amqp_connection.send_amqp_message(payload)
@@ -53,7 +53,7 @@ async def receive(lora):
         await amqp_connection.close()
 
 
-async def connect_to_rabbitmq(amqp_connection):
+async def connect_to_rabbitmq(amqp_connection, display):
     while True:
         try:
             await amqp_connection.connect()
