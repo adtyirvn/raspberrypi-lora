@@ -21,7 +21,7 @@ class AMQPConnection:
 
     async def connect(self):
         try:
-            self.connection = await aio_pika.connect_robust(self.host)
+            self.connection = await aio_pika.connect_robust(self.host, heartbeat=60)
             self.channel = await self.connection.channel()
             await self.channel.declare_queue('ecg:esp32', durable=False)
         except Exception as e:
