@@ -55,9 +55,7 @@ async def receive(lora):
         display.lcd_clear()
         print("Keyboard interrupt detected.")
         await amqp_connection.close()
-        display.lcd_display_string("Closing", 1)
-        display.lcd_display_string("Goodbye...", 2)
-        sleep(5)
+        show_on_lcd(["Closing", "Goodbye..."], 5)
         display.lcd_clear()
 
 
@@ -98,25 +96,19 @@ async def connect_to_rabbitmq(amqp_connection):
             print("Connected to RabbitMQ Broker")
             sleep(1)
             display.lcd_clear()
-            show_on_lcd(["Connected to", "RabbitMQ broker"])
-            sleep(1)
+            show_on_lcd(["Connected to", "RabbitMQ broker"], 1)
             display.lcd_clear()
             break
         except Exception as e:
             print(e)
             display.lcd_clear()
-            show_on_lcd(["Error, wait 5s", "Connecting..."])
-            # display.lcd_display_string("Error, wait 1s", 1)
-            # display.lcd_display_string("Connecting...", 2)
-            sleep(5)
+            show_on_lcd(["Error, wait 5s", "Connecting..."], 5)
 
 
 def show_info(message_json):
-    # display.lcd_clear()
     th = f'T: {message_json["t"]}C H: {message_json["h"]}%'
     time = f'{get_formatted_date(message_json["tsp"])}'
-    display.lcd_display_string(time, 1)
-    display.lcd_display_string(th, 2)
+    show_on_lcd([time, th])
 
 
 def show_on_lcd(items, delay=0):
@@ -130,11 +122,8 @@ def get_formatted_date(date_tuple):
 
 
 def decryption(ascon, ciphertext, key, nonce, mode="ECB"):
-    # print(f"key: {key} len: {len(key)}")
-    # print(f"nonce: {nonce} len: {len(nonce)}")
     plaintext = ascon.ascon_decrypt(
         key, nonce, associateddata=b"", ciphertext=ciphertext,  variant="Ascon-128")
     if mode == "CBC":
         new_nonce = ciphertext[:16]
-        # print(f"nw: {new_nonce} len: {len(new_nonce)}")
     return plaintext, new_nonce
