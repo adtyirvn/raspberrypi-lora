@@ -65,9 +65,6 @@ def receive_callback(lora):
     global nonce_g
     lora.blink_led()
     payload = lora.read_payload()
-    # print(payload)
-    # payload_decode = payload.decode('utf-8')
-    # payload_ascii = payload_decode.encode('ascii')
     plaintext, nonce_g = decryption(
         asc, payload, key_g, nonce_g, "CBC")
     message_json = plaintext.decode("utf-8")
