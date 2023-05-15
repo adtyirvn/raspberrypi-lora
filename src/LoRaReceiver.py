@@ -55,19 +55,10 @@ async def receive(lora):
         display.lcd_clear()
         print("Keyboard interrupt detected.")
         await amqp_connection.close()
-        display.lcd_display_string("closing", 1)
-        display.lcd_display_string("goodbye...", 2)
+        display.lcd_display_string("Closing", 1)
+        display.lcd_display_string("Goodbye...", 2)
         sleep(5)
         display.lcd_clear()
-
-    # except KeyboardInterrupt:
-    #     display.lcd_clear()
-    #     print("Keyboard interrupt detected.")
-    #     await amqp_connection.close()
-    #     display.lcd_display_string("closing", 1)
-    #     display.lcd_display_string("goodbye...", 2)
-    #     sleep(5)
-    #     display.lcd_clear()
 
 
 def receive_callback(lora):
@@ -103,20 +94,20 @@ async def connect_to_rabbitmq(amqp_connection):
         try:
             print("Connecting...")
             display.lcd_clear()
-            show_on_lcd["Connecting to", "RabbitMQ Broker"]
+            show_on_lcd(["Connecting to", "RabbitMQ Broker"])
             await amqp_connection.connect()
             print("Connected to RabbitMQ Broker")
             sleep(1)
             display.lcd_clear()
-            show_on_lcd["Connected to", "RabbitMQ broker"]
+            show_on_lcd(["Connected to", "RabbitMQ broker"])
             sleep(1)
             break
         except Exception as e:
             print(e)
             display.lcd_clear()
-            # show_on_lcd()
-            display.lcd_display_string("Error, wait 1s", 1)
-            display.lcd_display_string("Connecting...", 2)
+            show_on_lcd(["Error, wait 5s", "Connecting..."])
+            # display.lcd_display_string("Error, wait 1s", 1)
+            # display.lcd_display_string("Connecting...", 2)
             sleep(5)
 
 
