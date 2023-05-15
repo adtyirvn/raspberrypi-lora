@@ -46,6 +46,7 @@ async def receive(lora):
                         "to": node_one
                     }
                     if msg_count == 0:
+                        display.lcd_clear()
                         mes_dict["rst"] = "reset"
                     mes_json = json.dumps(mes_dict)
                     lora.println(mes_json)
@@ -54,7 +55,7 @@ async def receive(lora):
                     previous_time = current_time
                 await on_receive(lora)
             except Exception as e:
-                print(f"Error: {e}")
+                raise Exception(f"Error: {e}")
     except KeyboardInterrupt:
         display.lcd_clear()
         print("Keyboard interrupt detected.")
@@ -110,7 +111,6 @@ async def connect_to_rabbitmq(amqp_connection):
             sleep(1)
             display.lcd_clear()
             show_on_lcd(["Connected to", "RabbitMQ broker"], 1)
-            display.lcd_clear()
             break
         except Exception as e:
             print(e)
