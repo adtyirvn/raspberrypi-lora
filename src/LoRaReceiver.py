@@ -44,7 +44,7 @@ async def receive(lora):
         display.lcd_clear()
         print("Keyboard interrupt detected.")
         await amqp_connection.close()
-        show_info(["Closing", "Goodbye..."], 5)
+        show_on_lcd(["Closing", "Goodbye..."], 5)
         display.lcd_clear()
 
 
