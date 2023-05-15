@@ -118,7 +118,7 @@ def show_on_lcd(items, delay=0):
 
 
 def get_formatted_date(date_tuple):
-    return f"{(date_tuple[0])[-2:]:02d}-{date_tuple[1]:02d}-{date_tuple[2]:02d}{date_tuple[4]:02d}:{date_tuple[5]:02d}:{date_tuple[6]:02d}"
+    return f"{str(date_tuple[0])[-2:]:02d}-{date_tuple[1]:02d}-{date_tuple[2]:02d}{date_tuple[4]:02d}:{date_tuple[5]:02d}:{date_tuple[6]:02d}"
 
 
 def decryption(ascon, ciphertext, key, nonce, mode="ECB"):
