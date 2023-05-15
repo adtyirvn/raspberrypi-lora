@@ -83,7 +83,7 @@ def receive_callback(lora):
     message_dict = json.loads(message_json)
     show_info(message_dict)
     print(f"*** Received message ***\n{message_dict}")
-    print("with RSSI: {lora.packetRssi()}\n")
+    print(f"with RSSI: {lora.packetRssi()}\n")
     return message_dict, payload
 
 
