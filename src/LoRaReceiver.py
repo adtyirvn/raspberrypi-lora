@@ -26,15 +26,26 @@ nonce_g = config.ENCRYPT_NONCE
 async def receive(lora):
     try:
         msg_count = 0
+        # display.lcd_clear()
         await connect_to_rabbitmq(amqp_connection)
         delay_ms = 4000
         previous_time = int(round(time.time() * 1000))
+        # secs = 0
         while True:
             try:
                 current_time = int(round(time.time() * 1000))
                 elapsed_time = current_time - previous_time
                 if elapsed_time >= delay_ms:
-                    send_callback(lora, msg_count)
+                    mes_dict = {
+                        "idp": msg_count,
+                        "id": master_node,
+                        "to": node_one
+                    }
+                    if msg_count == 0:
+                        mes_dict["rst"] = "reset"
+                    mes_json = json.dumps(mes_dict)
+                    lora.println(mes_json)
+                    print(f"send: {mes_json}\n")
                     msg_count += 1
                     previous_time = current_time
                 await on_receive(lora)
@@ -44,23 +55,13 @@ async def receive(lora):
         display.lcd_clear()
         print("Keyboard interrupt detected.")
         await amqp_connection.close()
-        show_on_lcd(["Closing", "Goodbye..."], 5)
+        display.lcd_display_string("Closing", 1)
+        display.lcd_display_string("Goodbye...", 2)
+        sleep(5)
         display.lcd_clear()
 
-
-def send_callback(lora, count):
-    mes_dict = {
-        "idp": count,
-        "id": master_node,
-        "to": node_one
-    }
-    if count == 0:
-        mes_dict["rst"] = "reset"
-        mes_json = json.dumps(mes_dict)
-        lora.println(mes_json)
-        print(f"send: {mes_json}\n")
-
-
+def send_callback(lora):
+    
 def receive_callback(lora):
     global nonce_g
     lora.blink_led()
@@ -98,19 +99,25 @@ async def connect_to_rabbitmq(amqp_connection):
             print("Connected to RabbitMQ Broker")
             sleep(1)
             display.lcd_clear()
-            show_on_lcd(["Connected to", "RabbitMQ broker"], 1)
+            show_on_lcd(["Connected to", "RabbitMQ broker"])
+            sleep(1)
             display.lcd_clear()
             break
         except Exception as e:
             print(e)
             display.lcd_clear()
-            show_on_lcd(["Error, wait 5s", "Connecting..."], 5)
+            show_on_lcd(["Error, wait 5s", "Connecting..."])
+            # display.lcd_display_string("Error, wait 1s", 1)
+            # display.lcd_display_string("Connecting...", 2)
+            sleep(5)
 
 
 def show_info(message_json):
+    # display.lcd_clear()
     th = f'T: {message_json["t"]}C H: {message_json["h"]}%'
     time = f'{get_formatted_date(message_json["tsp"])}'
-    show_on_lcd([time, th])
+    display.lcd_display_string(time, 1)
+    display.lcd_display_string(th, 2)
 
 
 def show_on_lcd(items, delay=0):
