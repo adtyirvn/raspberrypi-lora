@@ -55,7 +55,7 @@ async def receive(lora):
                     previous_time = current_time
                 await on_receive(lora)
             except Exception as e:
-                raise Exception(f"Error: {e}")
+                print(f"Error: {e}")
     except KeyboardInterrupt:
         display.lcd_clear()
         print("Keyboard interrupt detected.")
