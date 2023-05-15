@@ -78,6 +78,7 @@ def receive_callback(lora):
         asc, payload, key_g, nonce_g, "CBC")
     message_json = plaintext.decode("utf-8")
     message_dict = json.loads(message_json)
+    display.lcd_clear()
     show_info(message_dict)
     print("\n*** Received message ***\n{}".format(message_dict))
     print("with RSSI: {}\n".format(lora.packetRssi()))
@@ -102,14 +103,12 @@ async def connect_to_rabbitmq(amqp_connection):
         try:
             print("Connecting...")
             display.lcd_clear()
-            display.lcd_display_string("Connecting to", 1)
-            display.lcd_display_string("RabbitMQ Broker", 2)
+            show_on_lcd["Connecting to", "RabbitMQ Broker"]
             await amqp_connection.connect()
             print("Connected to RabbitMQ Broker")
             sleep(1)
             display.lcd_clear()
-            display.lcd_display_string("Connected to", 1)
-            display.lcd_display_string("RabbitMQ broker", 2)
+            show_on_lcd["Connected to", "RabbitMQ broker"]
             sleep(1)
             break
         except Exception as e:
