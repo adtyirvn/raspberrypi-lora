@@ -60,8 +60,7 @@ async def receive(lora):
         sleep(5)
         display.lcd_clear()
 
-def send_callback(lora):
-    
+
 def receive_callback(lora):
     global nonce_g
     lora.blink_led()
