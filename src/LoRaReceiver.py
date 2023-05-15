@@ -6,7 +6,7 @@ from time import sleep
 from . import lcd_i2c
 import json
 from . import ascon
-import binascii
+import calendar
 import time
 from . import config
 
@@ -118,7 +118,7 @@ def show_on_lcd(items, delay=0):
 
 
 def get_formatted_date(date_tuple):
-    return f"{str(date_tuple[0])[-2:]:s}-{date_tuple[1]:02d}-{date_tuple[2]:02d}{date_tuple[4]:02d}:{date_tuple[5]:02d}:{date_tuple[6]:02d}"
+    return f"{date_tuple[2]:02d}{(calendar.month_name[date_tuple[1]])[:3]:s}{str(date_tuple[0])[-2:]:s}{date_tuple[4]:02d}:{date_tuple[5]:02d}:{date_tuple[6]:02d}"
 
 
 def decryption(ascon, ciphertext, key, nonce, mode="ECB"):
