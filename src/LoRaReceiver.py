@@ -70,8 +70,8 @@ def receive_callback(lora):
     message_json = plaintext.decode("utf-8")
     message_dict = json.loads(message_json)
     show_info(message_dict)
-    print("\n*** Received message ***\n{}".format(message_dict))
-    print("with RSSI: {}\n".format(lora.packetRssi()))
+    print(f"*** Received message ***\n{message_dict}")
+    print("with RSSI: {lora.packetRssi()}\n")
     return message_dict, payload
 
 
