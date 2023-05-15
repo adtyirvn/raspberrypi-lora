@@ -37,7 +37,7 @@ class Controller:
         self.reset_pin(self.pin_reset)
         self.spi = self.prepare_spi(self.get_spi())
         self.transceivers = {}
-        self.blink_led(*blink_on_start)
+        # self.blink_led(*blink_on_start)
 
     def add_transceiver(self,
                         transceiver,

@@ -122,7 +122,7 @@ class Controller(controller.Controller):
             GPIO.output(23, GPIO.HIGH)
             sleep(on_seconds)
             GPIO.output(23, GPIO.LOW)
-            sleep(on_seconds)
+            sleep(off_seconds)
 
     def __exit__(self):
         GPIO.cleanup()

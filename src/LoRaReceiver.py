@@ -24,6 +24,10 @@ nonce_g = config.ENCRYPT_NONCE
 
 
 async def receive(lora):
+    display.lcd_clear()
+    display.lcd_display_string("Starting...", 1)
+    print("Starting...")
+    blink_led(2, 0.5, 0.5)
     try:
         msg_count = 0
         # display.lcd_clear()
@@ -57,6 +61,15 @@ async def receive(lora):
         await amqp_connection.close()
         show_on_lcd(["Closing", "Goodbye..."], 5)
         display.lcd_clear()
+
+
+def blink_led(times=1, on_seconds=0.1, off_seconds=0.1):
+    GPIO.setup(23, GPIO.OUT, initial=GPIO.LOW)
+    for i in range(times):
+        GPIO.output(23, GPIO.HIGH)
+        sleep(on_seconds)
+        GPIO.output(23, GPIO.LOW)
+        sleep(off_seconds)
 
 
 def receive_callback(lora):
