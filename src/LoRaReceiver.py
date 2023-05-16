@@ -79,19 +79,19 @@ def receive_callback(lora):
     payload = lora.read_payload()
     plaintext, nonce_g = decryption(
         asc, payload, key_g, nonce_g, "CBC")
-    bool_cip = bool(plaintext)
-    if bool_cip:
+    message_dict = {}
+    if bool(plaintext):
         message_json = plaintext.decode("utf-8")
         message_dict = json.loads(message_json)
         show_info(message_dict)
         print(f"*** Received message ***\n{message_dict}")
         print(f"with RSSI: {lora.packetRssi()}\n")
-    return message_dict, payload, bool_cip
+    return message_dict, payload
 
 
 async def on_receive(lora):
     if lora.receivedPacket():
-        payload, ciphertext, bool_cip = receive_callback(lora)
+        payload, ciphertext = receive_callback(lora)
         if not len(payload):
             return
         recipient = payload["to"]
@@ -99,7 +99,7 @@ async def on_receive(lora):
         if recipient != node_one and recipient != master_node:
             return
         if sender == node_one:
-            print(bool_cip)
+            print(bool(payload))
             await amqp_connection.send_amqp_message(ciphertext)
 
 
