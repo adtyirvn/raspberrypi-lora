@@ -22,6 +22,8 @@ node_one = 'esp32'
 key_g = config.ENCRYPT_KEY
 nonce_g = config.ENCRYPT_NONCE
 
+bool_cip = False
+
 
 async def receive(lora):
     display.lcd_clear()
@@ -46,6 +48,12 @@ async def receive(lora):
                     if msg_count == 0:
                         display.lcd_clear()
                         mes_dict["rst"] = "reset"
+                        if not bool_cip:
+                            msg = {
+                                "stat": bool_cip
+                            }
+                            msg_json = json.dumps(msg)
+                            await amqp_connection.send_amqp_message(msg_json.encode("utf-8"))
                     mes_json = json.dumps(mes_dict)
                     lora.println(mes_json)
                     print(f"send: {mes_json}\n")
@@ -75,12 +83,12 @@ def blink_led(times=1, on_seconds=0.1, off_seconds=0.1):
 
 def receive_callback(lora):
     global nonce_g
+    global bool_cip
     lora.blink_led()
     payload = lora.read_payload()
     plaintext, nonce_g = decryption(
         asc, payload, key_g, nonce_g, "CBC")
     message_dict = {}
-    bool_cip = False
     if bool(plaintext):
         message_json = plaintext.decode("utf-8")
         message_dict = json.loads(message_json)
@@ -96,7 +104,7 @@ async def on_receive(lora):
         payload, ciphertext, bool_cip = receive_callback(lora)
         if not bool_cip:
             msg = {
-                "stat": False
+                "stat": bool_cip
             }
             msg_json = json.dumps(msg)
             await amqp_connection.send_amqp_message(msg_json.encode("utf-8"))
