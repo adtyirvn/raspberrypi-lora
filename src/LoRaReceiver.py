@@ -97,7 +97,7 @@ async def on_receive(lora):
         if recipient != node_one and recipient != master_node:
             return
         if sender == node_one:
-
+            print(bool(ciphertext))
             await amqp_connection.send_amqp_message(ciphertext)
 
 
