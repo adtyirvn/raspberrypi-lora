@@ -94,7 +94,8 @@ def receive_callback(lora):
 async def on_receive(lora):
     if lora.receivedPacket():
         payload, ciphertext, bool_cip = receive_callback(lora)
-        print(bool_cip)
+        if not bool_cip:
+            await amqp_connection.send_amqp_message(bool_cip)
         if not len(payload):
             return
         recipient = payload["to"]
