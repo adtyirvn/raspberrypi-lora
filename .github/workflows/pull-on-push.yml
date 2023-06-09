@@ -1,0 +1,17 @@
+name: Pull on Push
+
+on:
+  push:
+    branches:
+      - master-slave
+
+jobs:
+  pull:
+    runs-on: self-hosted
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Pull changes
+        run: git pull

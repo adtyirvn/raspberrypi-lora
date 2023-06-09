@@ -136,9 +136,9 @@ async def connect_to_rabbitmq(amqp_connection):
             show_on_lcd(["Error, wait 5s", "Retry..."], 3)
 
 
-def show_info(message_json):
-    th = f'T: {message_json["t"]}C H: {message_json["h"]}%'
-    time = f'{get_formatted_date(message_json["tsp"])}'
+def show_info(message):
+    th = f'D: {message["rd"]} V: {message["v"]}'
+    time = f'{get_formatted_date(message["tsp"])}'
     show_on_lcd([time, th])
 
 
