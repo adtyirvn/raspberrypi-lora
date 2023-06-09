@@ -74,12 +74,10 @@ async def connect_to_rabbitmq(amqp_connection):
             sleep(1)
 
 
-def show_info(display, message_json):
-    # display.lcd_clear()
-    th = f'T: {message_json["t"]}C H: {message_json["h"]}%'
-    time = f'{get_formatted_date(message_json["tsp"])}'
-    display.lcd_display_string(time, 1)
-    display.lcd_display_string(th, 2)
+def show_info(message):
+    th = f'D: {message["rd"]}C V: {message["v"]}%'
+    time = f'{get_formatted_date(message["tsp"])}'
+    show_on_lcd([time, th])
 
 
 def show_on_lcd(lcd, items, delay=0):
