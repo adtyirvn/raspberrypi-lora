@@ -80,9 +80,9 @@ def show_info(message):
     show_on_lcd([time, th])
 
 
-def show_on_lcd(lcd, items, delay=0):
+def show_on_lcd(items, delay=0):
     for x, text in enumerate(items):
-        lcd.lcd_display_string(text, x)
+        display.lcd_display_string(text, x)
     sleep(delay)
 
 
