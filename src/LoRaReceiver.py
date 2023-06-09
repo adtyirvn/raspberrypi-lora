@@ -75,7 +75,7 @@ async def connect_to_rabbitmq(amqp_connection):
 
 
 def show_info(message):
-    th = f'D: {message["rd"]}C V: {message["v"]}%'
+    th = f'D: {message["rd"]} V: {message["v"]}'
     time = f'{get_formatted_date(message["tsp"])}'
     show_on_lcd([time, th])
 
