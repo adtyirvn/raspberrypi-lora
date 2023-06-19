@@ -28,6 +28,7 @@ class AMQPConnection:
             raise Exception(f"Error connecting to RabbitMQ: {e}")
 
     async def close(self):
+        await self.channel.close()
         await self.connection.close()
 
     async def send_amqp_message(self, message):
