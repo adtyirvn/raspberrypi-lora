@@ -102,20 +102,21 @@ def receive_callback(lora):
 async def on_receive(lora):
     if lora.receivedPacket():
         payload, ciphertext, bool_cip = receive_callback(lora)
-        if not bool_cip:
-            msg = {
-                "stat": bool_cip
-            }
-            msg_json = json.dumps(msg)
-            await amqp_connection.send_amqp_message(msg_json.encode("utf-8"))
-        if not len(payload):
-            return
-        recipient = payload["to"]
-        sender = payload["id"]
-        if recipient != node_one and recipient != master_node:
-            return
-        if sender == node_one:
-            await amqp_connection.send_amqp_message(ciphertext)
+        print(bool_cip)
+        # if not bool_cip:
+        #     msg = {
+        #         "stat": bool_cip
+        #     }
+        #     msg_json = json.dumps(msg)
+        #     await amqp_connection.send_amqp_message(msg_json.encode("utf-8"))
+        # if not len(payload):
+        #     return
+        # recipient = payload["to"]
+        # sender = payload["id"]
+        # if recipient != node_one and recipient != master_node:
+        #     return
+        # if sender == node_one:
+        #     await amqp_connection.send_amqp_message(ciphertext)
 
 
 async def connect_to_rabbitmq(amqp_connection):
