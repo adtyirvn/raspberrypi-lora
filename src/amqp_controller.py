@@ -1,14 +1,14 @@
 import os
 from dotenv import load_dotenv
 import aio_pika
-
+from . import ascon
 # Load environment variables from .env file
 load_dotenv()
 
 # Access environment variables
 rabbitmq_server = os.getenv('RABBITMQ_SERVER')
 
-
+asc = ascon.Ascon()
 # class RabbitMQConnectionError(Exception):
 #     pass
 
@@ -40,6 +40,6 @@ class AMQPConnection:
                 ),
                 routing_key='ecg:esp32'
             )
-            print(f"*** Message send ***\n{message}\n")
+            print(f"*** Message send ***\n{asc.bytes_to_hex(message)}\n")
         except Exception as e:
             raise Exception(f"Error sending message: {e}")
